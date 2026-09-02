@@ -6,7 +6,6 @@ Mahek Bakrola   -  mahekbakrola@my.unt.edu  -   Backend Developer / Research and
 Prasanna Sigdel  -  Prasannasigdel@my.unt.edu  -  Frontend Developer / UI/UX Designer        
 Srijana Kushwaha  -  srijanakushwaha@my.unt.edu  -  Testing-QA / API-Intergration Developer
 
+Project board - https://github.com/users/mahekbakrola/projects/1
 
-Link to the team's GitHub Project board
-
-Short project status
+Status - Research has started 
