@@ -1,0 +1,54 @@
+Folio QA fixes — complete replacement files
+
+Use this fixes-only ZIP for your existing deployment. It includes the earlier Google-name correction and this source audit's changes.
+
+1. Open your existing Folio-cloudflare folder in VS Code.
+2. Copy each file below to the SAME relative path in that project. Replace individual files, not entire folders. Create the new files at their listed paths.
+3. KEEP your current wrangler.jsonc, actual D1 database UUID, and Supabase configuration. They are not included here. No new dependency or database migration is needed.
+4. In that project's terminal run:
+   npm run typecheck
+   npm run lint
+   npm test
+   npm run build
+   npm run deploy
+5. Refresh the deployed website and follow the manual checklist in Folio-QA-audit.md.
+
+Complete replacement files:
+ - components/folio/auth-form.tsx
+ - components/folio/career.tsx
+ - components/folio/constellation.tsx
+ - components/folio/dashboard.tsx
+ - components/folio/discover.tsx
+ - components/folio/entity-editor.tsx
+ - components/folio/interview.tsx
+ - components/folio/jobs.tsx
+ - components/folio/onboarding.tsx
+ - components/folio/profile.tsx
+ - components/folio/resume.tsx
+ - components/folio/settings.tsx
+ - components/folio/shared.tsx
+ - components/folio/shell.tsx
+ - components/folio/signout-button.tsx
+ - components/folio/welcome.tsx
+ - components/folio/workspace.tsx
+ - components/ui/button.tsx
+ - lib/auth/profile.ts
+ - lib/client-request.ts
+ - lib/engine/actions.ts
+ - lib/engine/pdf.ts
+ - lib/repository.ts
+ - lib/store.ts
+ - lib/validation.ts
+ - app/api/workspace/route.ts
+ - app/auth/callback/route.ts
+ - app/globals.css
+ - tests/account-profile.test.ts
+ - tests/interactions.test.ts
+ - tests/repository.test.ts
+ - eslint.config.mjs
+
+The report includes all 195 authored interactive definitions, additional primitive/generated controls, menu options, code simulations, confirmed defects versus unverified browser risks, exact before/after diff, and manual testing instructions.
+
+No live Cloudflare deployment was performed here. Live Google/email round trips and real Safari/Firefox/Chrome/mobile click tests remain unverified. Your configured deployment needs those checks.
+
+For a fresh installation only: this full archive retains the D1 placeholder UUID. Configure your database using the main README before deploying. For an existing deployment, prefer fixes.zip and keep your configured wrangler.jsonc.
