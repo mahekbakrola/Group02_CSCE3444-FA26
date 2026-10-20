@@ -1,12 +1,11 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { Shell } from "@/components/folio/shell";
-export const metadata: Metadata = {
-  title: { default: "Folio — Your career, connected", template: "%s · Folio" },
-  description:
-    "Discover the value in your experience. Build an evidence-backed résumé and explore your next chapter.",
-  icons: { icon: "/favicon.svg" },
-};
+export const metadata = {
+     title: "Folio | Free Résumé Builder for Students",
+     description: "Build a professional résumé for free. Answer guided questions, get a polished résumé, and find jobs that fit.",
+     keywords: ["resume builder", "free resume builder", "student resume", "resume for internships"],
+   };
 export default function RootLayout({
   children,
 }: {
