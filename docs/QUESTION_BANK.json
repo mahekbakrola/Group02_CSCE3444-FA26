@@ -1,0 +1,3148 @@
+[
+  {
+    "id": "identity.name",
+    "category": "identity",
+    "text": "What name should appear on your résumé?",
+    "why": "Use the professional name you want employers to see.",
+    "inputType": "text",
+    "required": true,
+    "priority": 100,
+    "destination": "name",
+    "conditions": [],
+    "followUps": [],
+    "resumeSections": [
+      "identity"
+    ],
+    "careerDimensions": [
+      "evidence"
+    ],
+    "aiFollowUp": false,
+    "validation": {
+      "maxLength": 1800,
+      "minLength": 2
+    },
+    "scope": "profile"
+  },
+  {
+    "id": "identity.email",
+    "category": "identity",
+    "text": "Which email can employers use to contact you?",
+    "why": "A reliable contact method is part of a usable résumé.",
+    "inputType": "email",
+    "required": true,
+    "priority": 99,
+    "destination": "email",
+    "conditions": [],
+    "followUps": [],
+    "resumeSections": [
+      "identity"
+    ],
+    "careerDimensions": [
+      "evidence"
+    ],
+    "aiFollowUp": false,
+    "validation": {
+      "maxLength": 1800,
+      "minLength": 2
+    },
+    "scope": "profile"
+  },
+  {
+    "id": "career.target",
+    "category": "career",
+    "text": "What are you looking for next?",
+    "why": "Your target determines which real experiences to emphasize.",
+    "inputType": "choice",
+    "required": true,
+    "priority": 98,
+    "destination": "target",
+    "conditions": [],
+    "followUps": [],
+    "resumeSections": [
+      "career"
+    ],
+    "careerDimensions": [
+      "evidence"
+    ],
+    "aiFollowUp": true,
+    "validation": {
+      "maxLength": 1800,
+      "minLength": 2
+    },
+    "scope": "profile",
+    "options": [
+      "Software engineering",
+      "Data & AI",
+      "Cybersecurity",
+      "Cloud & systems",
+      "Hardware & engineering",
+      "Still exploring"
+    ]
+  },
+  {
+    "id": "education.year",
+    "category": "education",
+    "text": "Where are you in your studies?",
+    "why": "A first-year student should get prompts about labs and projects, even with no employment.",
+    "inputType": "choice",
+    "required": false,
+    "priority": 97,
+    "destination": "year",
+    "conditions": [],
+    "followUps": [],
+    "resumeSections": [
+      "education"
+    ],
+    "careerDimensions": [
+      "evidence"
+    ],
+    "aiFollowUp": true,
+    "validation": {
+      "maxLength": 1800,
+      "minLength": 2
+    },
+    "scope": "profile",
+    "options": [
+      "First year",
+      "Second year",
+      "Third year",
+      "Final year",
+      "Graduate student",
+      "Recently graduated"
+    ]
+  },
+  {
+    "id": "education.school",
+    "category": "education",
+    "text": "Where do you study?",
+    "why": "Your school provides context for your education.",
+    "inputType": "text",
+    "required": true,
+    "priority": 96,
+    "destination": "school",
+    "conditions": [],
+    "followUps": [],
+    "resumeSections": [
+      "education"
+    ],
+    "careerDimensions": [
+      "evidence"
+    ],
+    "aiFollowUp": true,
+    "validation": {
+      "maxLength": 1800,
+      "minLength": 2
+    },
+    "scope": "profile"
+  },
+  {
+    "id": "education.degree",
+    "category": "education",
+    "text": "What degree and major are you working toward?",
+    "why": "State the degree accurately, including a minor if relevant.",
+    "inputType": "text",
+    "required": true,
+    "priority": 95,
+    "destination": "degree",
+    "conditions": [],
+    "followUps": [],
+    "resumeSections": [
+      "education"
+    ],
+    "careerDimensions": [
+      "evidence"
+    ],
+    "aiFollowUp": true,
+    "validation": {
+      "maxLength": 1800,
+      "minLength": 2
+    },
+    "scope": "profile",
+    "example": "B.S. in Computer Science"
+  },
+  {
+    "id": "education.graduation",
+    "category": "education",
+    "text": "When do you expect to graduate?",
+    "why": "Expected graduation helps recruiters assess internship timing.",
+    "inputType": "text",
+    "required": true,
+    "priority": 94,
+    "destination": "graduation",
+    "conditions": [],
+    "followUps": [],
+    "resumeSections": [
+      "education"
+    ],
+    "careerDimensions": [
+      "evidence"
+    ],
+    "aiFollowUp": true,
+    "validation": {
+      "maxLength": 1800,
+      "minLength": 2
+    },
+    "scope": "profile",
+    "example": "May 2028"
+  },
+  {
+    "id": "discovery.work",
+    "category": "discovery",
+    "text": "Have you had a job, internship, or paid responsibility?",
+    "why": "Work outside your major can still demonstrate useful skills.",
+    "inputType": "choice",
+    "required": false,
+    "priority": 93,
+    "destination": "discovery.work",
+    "conditions": [],
+    "followUps": [
+      "experience.action",
+      "discovery.sources"
+    ],
+    "resumeSections": [
+      "discovery"
+    ],
+    "careerDimensions": [
+      "evidence"
+    ],
+    "aiFollowUp": true,
+    "validation": {
+      "maxLength": 1800,
+      "minLength": 2
+    },
+    "scope": "profile",
+    "options": [
+      "Yes, related to my field",
+      "Yes, in a different field",
+      "Not yet"
+    ]
+  },
+  {
+    "id": "discovery.sources",
+    "category": "discovery",
+    "text": "Which of these have you tried?",
+    "why": "Small responsibilities can contain strong evidence. Choose anything that applies.",
+    "inputType": "multi",
+    "required": false,
+    "priority": 92,
+    "destination": "discovery.sources",
+    "conditions": [],
+    "followUps": [
+      "discovery.story"
+    ],
+    "resumeSections": [
+      "discovery"
+    ],
+    "careerDimensions": [
+      "evidence"
+    ],
+    "aiFollowUp": true,
+    "validation": {
+      "maxLength": 1800,
+      "minLength": 2
+    },
+    "scope": "profile",
+    "options": [
+      "Course or personal projects",
+      "Repairing devices",
+      "Tutoring or helping classmates",
+      "A club or student organization",
+      "A family business",
+      "Volunteering",
+      "Hackathons or competitions",
+      "Content or community management",
+      "Research",
+      "Open source",
+      "None yet"
+    ]
+  },
+  {
+    "id": "discovery.story",
+    "category": "discovery",
+    "text": "Tell me about one thing you did that someone relied on.",
+    "why": "Start with a real event. It does not need to have been a job.",
+    "inputType": "textarea",
+    "required": false,
+    "priority": 91,
+    "destination": "discovery.story",
+    "conditions": [],
+    "followUps": [],
+    "resumeSections": [
+      "discovery"
+    ],
+    "careerDimensions": [
+      "evidence"
+    ],
+    "aiFollowUp": true,
+    "validation": {
+      "maxLength": 1800,
+      "minLength": 2
+    },
+    "scope": "profile",
+    "example": "I helped our club keep track of expenses in a spreadsheet."
+  },
+  {
+    "id": "identity.phone",
+    "category": "identity",
+    "text": "Would you like to include a phone number?",
+    "why": "Optional. Include a number you are comfortable sharing with employers.",
+    "inputType": "text",
+    "required": false,
+    "priority": 24,
+    "destination": "phone",
+    "conditions": [],
+    "followUps": [],
+    "resumeSections": [
+      "identity"
+    ],
+    "careerDimensions": [
+      "evidence"
+    ],
+    "aiFollowUp": false,
+    "validation": {
+      "maxLength": 1800,
+      "minLength": 2
+    },
+    "scope": "profile"
+  },
+  {
+    "id": "identity.location",
+    "category": "identity",
+    "text": "What city or region are you based in?",
+    "why": "City and region are sufficient; your street address is unnecessary.",
+    "inputType": "text",
+    "required": false,
+    "priority": 35,
+    "destination": "location",
+    "conditions": [],
+    "followUps": [],
+    "resumeSections": [
+      "identity"
+    ],
+    "careerDimensions": [
+      "evidence"
+    ],
+    "aiFollowUp": false,
+    "validation": {
+      "maxLength": 1800,
+      "minLength": 2
+    },
+    "scope": "profile"
+  },
+  {
+    "id": "identity.linkedin",
+    "category": "identity",
+    "text": "What is your LinkedIn URL?",
+    "why": "Link to a profile you have reviewed.",
+    "inputType": "url",
+    "required": false,
+    "priority": 23,
+    "destination": "linkedin",
+    "conditions": [],
+    "followUps": [],
+    "resumeSections": [
+      "identity"
+    ],
+    "careerDimensions": [
+      "evidence"
+    ],
+    "aiFollowUp": false,
+    "validation": {
+      "maxLength": 1800,
+      "minLength": 2
+    },
+    "scope": "profile"
+  },
+  {
+    "id": "identity.github",
+    "category": "identity",
+    "text": "What is your GitHub URL?",
+    "why": "Repositories can give recruiters concrete examples of your work.",
+    "inputType": "url",
+    "required": false,
+    "priority": 23,
+    "destination": "github",
+    "conditions": [],
+    "followUps": [],
+    "resumeSections": [
+      "identity"
+    ],
+    "careerDimensions": [
+      "evidence"
+    ],
+    "aiFollowUp": false,
+    "validation": {
+      "maxLength": 1800,
+      "minLength": 2
+    },
+    "scope": "profile"
+  },
+  {
+    "id": "identity.website",
+    "category": "identity",
+    "text": "Do you have a portfolio or personal website?",
+    "why": "A working project link can help demonstrate what you built.",
+    "inputType": "url",
+    "required": false,
+    "priority": 23,
+    "destination": "website",
+    "conditions": [],
+    "followUps": [],
+    "resumeSections": [
+      "identity"
+    ],
+    "careerDimensions": [
+      "evidence"
+    ],
+    "aiFollowUp": false,
+    "validation": {
+      "maxLength": 1800,
+      "minLength": 2
+    },
+    "scope": "profile"
+  },
+  {
+    "id": "education.gpa",
+    "category": "education",
+    "text": "Would you like to include your GPA and its scale?",
+    "why": "Optional: keep the exact value and scale from your school.",
+    "inputType": "text",
+    "required": false,
+    "priority": 30,
+    "destination": "gpa",
+    "conditions": [],
+    "followUps": [],
+    "resumeSections": [
+      "education"
+    ],
+    "careerDimensions": [
+      "evidence"
+    ],
+    "aiFollowUp": true,
+    "validation": {
+      "maxLength": 1800,
+      "minLength": 2
+    },
+    "scope": "profile",
+    "example": "3.7 / 4.0"
+  },
+  {
+    "id": "education.coursework",
+    "category": "education",
+    "text": "Which classes have given you skills relevant to your target?",
+    "why": "Choose a few relevant courses; distinguish current from completed courses.",
+    "inputType": "textarea",
+    "required": false,
+    "priority": 58,
+    "destination": "education.coursework",
+    "conditions": [],
+    "followUps": [],
+    "resumeSections": [
+      "education"
+    ],
+    "careerDimensions": [
+      "evidence"
+    ],
+    "aiFollowUp": true,
+    "validation": {
+      "maxLength": 1800,
+      "minLength": 2
+    },
+    "scope": "profile"
+  },
+  {
+    "id": "education.honors",
+    "category": "education",
+    "text": "Have you earned honors, scholarships, or academic awards?",
+    "why": "Include the award name, issuer, and date; do not infer membership from GPA.",
+    "inputType": "textarea",
+    "required": false,
+    "priority": 44,
+    "destination": "education.honors",
+    "conditions": [],
+    "followUps": [],
+    "resumeSections": [
+      "education"
+    ],
+    "careerDimensions": [
+      "evidence"
+    ],
+    "aiFollowUp": true,
+    "validation": {
+      "maxLength": 1800,
+      "minLength": 2
+    },
+    "scope": "profile"
+  },
+  {
+    "id": "education.lab",
+    "category": "education",
+    "text": "What is one lab or class assignment you can explain and demonstrate?",
+    "why": "A first-year résumé can begin with classroom evidence.",
+    "inputType": "textarea",
+    "required": false,
+    "priority": 88,
+    "destination": "education.lab",
+    "conditions": [
+      {
+        "questionId": "education.year",
+        "operator": "equals",
+        "value": "First year"
+      }
+    ],
+    "followUps": [],
+    "resumeSections": [
+      "education"
+    ],
+    "careerDimensions": [
+      "evidence"
+    ],
+    "aiFollowUp": true,
+    "validation": {
+      "maxLength": 1800,
+      "minLength": 2
+    },
+    "scope": "profile"
+  },
+  {
+    "id": "education.research",
+    "category": "education",
+    "text": "Have you worked with a professor or research group?",
+    "why": "Explain your actual role, methods, and any permitted public output.",
+    "inputType": "textarea",
+    "required": false,
+    "priority": 42,
+    "destination": "education.research",
+    "conditions": [],
+    "followUps": [],
+    "resumeSections": [
+      "education"
+    ],
+    "careerDimensions": [
+      "evidence"
+    ],
+    "aiFollowUp": true,
+    "validation": {
+      "maxLength": 1800,
+      "minLength": 2
+    },
+    "scope": "profile"
+  },
+  {
+    "id": "career.interests",
+    "category": "career",
+    "text": "Which kinds of problems make you curious?",
+    "why": "Interests and demonstrated abilities are separate signals.",
+    "inputType": "multi",
+    "required": false,
+    "priority": 85,
+    "destination": "interests",
+    "conditions": [],
+    "followUps": [],
+    "resumeSections": [
+      "career"
+    ],
+    "careerDimensions": [
+      "evidence"
+    ],
+    "aiFollowUp": true,
+    "validation": {
+      "maxLength": 1800,
+      "minLength": 2
+    },
+    "scope": "profile",
+    "options": [
+      "Building software",
+      "Finding patterns in data",
+      "Protecting systems",
+      "Connecting systems",
+      "Designing hardware",
+      "Helping people",
+      "Creating visual experiences",
+      "Exploring AI"
+    ]
+  },
+  {
+    "id": "career.workMode",
+    "category": "career",
+    "text": "What work arrangement would you prefer?",
+    "why": "A preference guides exploration and does not establish job eligibility.",
+    "inputType": "choice",
+    "required": false,
+    "priority": 52,
+    "destination": "workMode",
+    "conditions": [],
+    "followUps": [],
+    "resumeSections": [
+      "career"
+    ],
+    "careerDimensions": [
+      "evidence"
+    ],
+    "aiFollowUp": true,
+    "validation": {
+      "maxLength": 1800,
+      "minLength": 2
+    },
+    "scope": "profile",
+    "options": [
+      "Any",
+      "Remote",
+      "Hybrid",
+      "On-site"
+    ]
+  },
+  {
+    "id": "career.type",
+    "category": "career",
+    "text": "What kind of opportunity do you want?",
+    "why": "Distinguishes an internship search from full-time exploration.",
+    "inputType": "choice",
+    "required": false,
+    "priority": 54,
+    "destination": "career.type",
+    "conditions": [],
+    "followUps": [],
+    "resumeSections": [
+      "career"
+    ],
+    "careerDimensions": [
+      "evidence"
+    ],
+    "aiFollowUp": true,
+    "validation": {
+      "maxLength": 1800,
+      "minLength": 2
+    },
+    "scope": "profile",
+    "options": [
+      "Internship",
+      "Full-time",
+      "Part-time",
+      "Exploring"
+    ]
+  },
+  {
+    "id": "career.location",
+    "category": "career",
+    "text": "Where would you like to work, and could you relocate?",
+    "why": "Location can affect whether an opportunity is practical.",
+    "inputType": "textarea",
+    "required": false,
+    "priority": 41,
+    "destination": "career.location",
+    "conditions": [],
+    "followUps": [],
+    "resumeSections": [
+      "career"
+    ],
+    "careerDimensions": [
+      "evidence"
+    ],
+    "aiFollowUp": true,
+    "validation": {
+      "maxLength": 1800,
+      "minLength": 2
+    },
+    "scope": "profile"
+  },
+  {
+    "id": "career.industry",
+    "category": "career",
+    "text": "Are there industries or organizations you are interested in?",
+    "why": "A sector can shape which domain knowledge matters.",
+    "inputType": "textarea",
+    "required": false,
+    "priority": 20,
+    "destination": "career.industry",
+    "conditions": [],
+    "followUps": [],
+    "resumeSections": [
+      "career"
+    ],
+    "careerDimensions": [
+      "evidence"
+    ],
+    "aiFollowUp": true,
+    "validation": {
+      "maxLength": 1800,
+      "minLength": 2
+    },
+    "scope": "profile"
+  },
+  {
+    "id": "career.enjoyed",
+    "category": "career",
+    "text": "Which project or class have you enjoyed most, and why?",
+    "why": "Specific tasks are more useful than a personality label.",
+    "inputType": "textarea",
+    "required": false,
+    "priority": 64,
+    "destination": "career.enjoyed",
+    "conditions": [],
+    "followUps": [],
+    "resumeSections": [
+      "career"
+    ],
+    "careerDimensions": [
+      "evidence"
+    ],
+    "aiFollowUp": true,
+    "validation": {
+      "maxLength": 1800,
+      "minLength": 2
+    },
+    "scope": "profile"
+  },
+  {
+    "id": "career.people",
+    "category": "career",
+    "text": "How would you like to spend most of your working day?",
+    "why": "Work preferences help you compare daily responsibilities.",
+    "inputType": "choice",
+    "required": false,
+    "priority": 50,
+    "destination": "career.people",
+    "conditions": [],
+    "followUps": [],
+    "resumeSections": [
+      "career"
+    ],
+    "careerDimensions": [
+      "evidence"
+    ],
+    "aiFollowUp": true,
+    "validation": {
+      "maxLength": 1800,
+      "minLength": 2
+    },
+    "scope": "profile",
+    "options": [
+      "Building independently",
+      "Collaborating with a technical team",
+      "Working directly with customers",
+      "A mix of these"
+    ]
+  },
+  {
+    "id": "career.tradeoff",
+    "category": "career",
+    "text": "Would you rather analyze an open-ended problem or build a concrete solution?",
+    "why": "Neither preference is better. Explain with an example.",
+    "inputType": "textarea",
+    "required": false,
+    "priority": 49,
+    "destination": "career.tradeoff",
+    "conditions": [],
+    "followUps": [],
+    "resumeSections": [
+      "career"
+    ],
+    "careerDimensions": [
+      "evidence"
+    ],
+    "aiFollowUp": true,
+    "validation": {
+      "maxLength": 1800,
+      "minLength": 2
+    },
+    "scope": "profile"
+  },
+  {
+    "id": "career.unsure",
+    "category": "career",
+    "text": "What have you tried so far, and what would you like to try next?",
+    "why": "Exploration recommendations should be small experiments, not definitive judgments.",
+    "inputType": "textarea",
+    "required": false,
+    "priority": 87,
+    "destination": "career.unsure",
+    "conditions": [
+      {
+        "questionId": "career.target",
+        "operator": "equals",
+        "value": "Still exploring"
+      }
+    ],
+    "followUps": [],
+    "resumeSections": [
+      "career"
+    ],
+    "careerDimensions": [
+      "evidence"
+    ],
+    "aiFollowUp": true,
+    "validation": {
+      "maxLength": 1800,
+      "minLength": 2
+    },
+    "scope": "profile"
+  },
+  {
+    "id": "career.job",
+    "category": "career",
+    "text": "Do you have a job description you want to use?",
+    "why": "Paste it in Job match to compare stated requirements with your evidence.",
+    "inputType": "textarea",
+    "required": false,
+    "priority": 15,
+    "destination": "career.job",
+    "conditions": [],
+    "followUps": [],
+    "resumeSections": [
+      "career"
+    ],
+    "careerDimensions": [
+      "evidence"
+    ],
+    "aiFollowUp": true,
+    "validation": {
+      "maxLength": 1800,
+      "minLength": 2
+    },
+    "scope": "profile"
+  },
+  {
+    "id": "skills.claimed",
+    "category": "skills",
+    "text": "Which technical tools or languages have you used?",
+    "why": "These begin as self-reported skills until linked to an example.",
+    "inputType": "textarea",
+    "required": false,
+    "priority": 61,
+    "destination": "skills.claimed",
+    "conditions": [],
+    "followUps": [],
+    "resumeSections": [
+      "skills"
+    ],
+    "careerDimensions": [
+      "evidence"
+    ],
+    "aiFollowUp": true,
+    "validation": {
+      "maxLength": 1800,
+      "minLength": 2
+    },
+    "scope": "profile",
+    "example": "Python, SQL, Git"
+  },
+  {
+    "id": "skills.evidence",
+    "category": "skills",
+    "text": "Pick one skill. What did you actually do with it, and where?",
+    "why": "An example is more meaningful than an arbitrary 1–10 rating.",
+    "inputType": "textarea",
+    "required": false,
+    "priority": 60,
+    "destination": "skills.evidence",
+    "conditions": [
+      {
+        "questionId": "skills.claimed",
+        "operator": "exists"
+      }
+    ],
+    "followUps": [],
+    "resumeSections": [
+      "skills"
+    ],
+    "careerDimensions": [
+      "evidence"
+    ],
+    "aiFollowUp": true,
+    "validation": {
+      "maxLength": 1800,
+      "minLength": 2
+    },
+    "scope": "profile"
+  },
+  {
+    "id": "skills.recency",
+    "category": "skills",
+    "text": "When did you last use those skills, and what could you do independently?",
+    "why": "Recency and independence support an honest discussion of capability.",
+    "inputType": "textarea",
+    "required": false,
+    "priority": 39,
+    "destination": "skills.recency",
+    "conditions": [],
+    "followUps": [],
+    "resumeSections": [
+      "skills"
+    ],
+    "careerDimensions": [
+      "evidence"
+    ],
+    "aiFollowUp": true,
+    "validation": {
+      "maxLength": 1800,
+      "minLength": 2
+    },
+    "scope": "profile"
+  },
+  {
+    "id": "skills.languages",
+    "category": "skills",
+    "text": "Which languages can you communicate in, and in what contexts?",
+    "why": "Only include proficiency you can accurately describe.",
+    "inputType": "textarea",
+    "required": false,
+    "priority": 17,
+    "destination": "skills.languages",
+    "conditions": [],
+    "followUps": [],
+    "resumeSections": [
+      "skills"
+    ],
+    "careerDimensions": [
+      "evidence"
+    ],
+    "aiFollowUp": true,
+    "validation": {
+      "maxLength": 1800,
+      "minLength": 2
+    },
+    "scope": "profile"
+  },
+  {
+    "id": "skills.certifications",
+    "category": "skills",
+    "text": "Have you earned any certifications?",
+    "why": "List issuer, credential name, completion date, and optional verification link. Mark in-progress credentials clearly.",
+    "inputType": "textarea",
+    "required": false,
+    "priority": 35,
+    "destination": "skills.certifications",
+    "conditions": [],
+    "followUps": [],
+    "resumeSections": [
+      "skills"
+    ],
+    "careerDimensions": [
+      "evidence"
+    ],
+    "aiFollowUp": true,
+    "validation": {
+      "maxLength": 1800,
+      "minLength": 2
+    },
+    "scope": "profile"
+  },
+  {
+    "id": "skills.evaluation",
+    "category": "skills",
+    "text": "How could someone inspect or reproduce your work?",
+    "why": "A repository, test, demonstration, or artifact is stronger than a self-rating.",
+    "inputType": "textarea",
+    "required": false,
+    "priority": 38,
+    "destination": "skills.evaluation",
+    "conditions": [],
+    "followUps": [],
+    "resumeSections": [
+      "skills"
+    ],
+    "careerDimensions": [
+      "evidence"
+    ],
+    "aiFollowUp": true,
+    "validation": {
+      "maxLength": 1800,
+      "minLength": 2
+    },
+    "scope": "profile"
+  },
+  {
+    "id": "import.resume",
+    "category": "discovery",
+    "text": "What is in your existing résumé that we have not captured?",
+    "why": "Imported text is unverified until you confirm each fact. Use Import in your profile.",
+    "inputType": "textarea",
+    "required": false,
+    "priority": 16,
+    "destination": "import.resume",
+    "conditions": [],
+    "followUps": [],
+    "resumeSections": [
+      "discovery"
+    ],
+    "careerDimensions": [
+      "evidence"
+    ],
+    "aiFollowUp": true,
+    "validation": {
+      "maxLength": 1800,
+      "minLength": 2
+    },
+    "scope": "profile"
+  },
+  {
+    "id": "experience.summary",
+    "category": "experience",
+    "text": "How would you describe this experience in your own words?",
+    "why": "A rough description is enough to begin. We will uncover the specifics together.",
+    "inputType": "textarea",
+    "required": false,
+    "priority": 90,
+    "destination": "experience.summary",
+    "conditions": [],
+    "followUps": [
+      "experience.action",
+      "experience.tools",
+      "experience.outcome"
+    ],
+    "resumeSections": [
+      "experience"
+    ],
+    "careerDimensions": [
+      "evidence"
+    ],
+    "aiFollowUp": true,
+    "validation": {
+      "maxLength": 1800,
+      "minLength": 2
+    },
+    "scope": "experience",
+    "metric": false
+  },
+  {
+    "id": "experience.problem",
+    "category": "experience",
+    "text": "What problem or need were you working on?",
+    "why": "Context helps explain why your contribution mattered.",
+    "inputType": "textarea",
+    "required": false,
+    "priority": 87,
+    "destination": "experience.problem",
+    "conditions": [
+      {
+        "questionId": "experience.summary",
+        "operator": "exists"
+      }
+    ],
+    "followUps": [],
+    "resumeSections": [
+      "experience"
+    ],
+    "careerDimensions": [
+      "evidence"
+    ],
+    "aiFollowUp": true,
+    "validation": {
+      "maxLength": 1800,
+      "minLength": 2
+    },
+    "scope": "experience",
+    "metric": false
+  },
+  {
+    "id": "experience.action",
+    "category": "experience",
+    "text": "What did you personally do?",
+    "why": "Separate your own contribution from the overall team result.",
+    "inputType": "textarea",
+    "required": true,
+    "priority": 89,
+    "destination": "experience.action",
+    "conditions": [
+      {
+        "questionId": "experience.summary",
+        "operator": "exists"
+      }
+    ],
+    "followUps": [],
+    "resumeSections": [
+      "experience"
+    ],
+    "careerDimensions": [
+      "evidence"
+    ],
+    "aiFollowUp": true,
+    "validation": {
+      "maxLength": 1800,
+      "minLength": 2
+    },
+    "scope": "experience",
+    "metric": false
+  },
+  {
+    "id": "experience.tools",
+    "category": "experience",
+    "text": "What tools, technologies, or methods did you actually use?",
+    "why": "Links concrete work to skills; a mention is not an expert rating.",
+    "inputType": "textarea",
+    "required": false,
+    "priority": 84,
+    "destination": "experience.tools",
+    "conditions": [
+      {
+        "questionId": "experience.summary",
+        "operator": "exists"
+      }
+    ],
+    "followUps": [],
+    "resumeSections": [
+      "experience"
+    ],
+    "careerDimensions": [
+      "evidence"
+    ],
+    "aiFollowUp": true,
+    "validation": {
+      "maxLength": 1800,
+      "minLength": 2
+    },
+    "scope": "experience",
+    "metric": false
+  },
+  {
+    "id": "experience.outcome",
+    "category": "experience",
+    "text": "What happened as a result of your work?",
+    "why": "A qualitative result is useful when there is no reliable number.",
+    "inputType": "textarea",
+    "required": false,
+    "priority": 83,
+    "destination": "experience.outcome",
+    "conditions": [
+      {
+        "questionId": "experience.summary",
+        "operator": "exists"
+      }
+    ],
+    "followUps": [],
+    "resumeSections": [
+      "experience"
+    ],
+    "careerDimensions": [
+      "evidence"
+    ],
+    "aiFollowUp": true,
+    "validation": {
+      "maxLength": 1800,
+      "minLength": 2
+    },
+    "scope": "experience",
+    "metric": false
+  },
+  {
+    "id": "experience.metric",
+    "category": "experience",
+    "text": "Is there a number or range you can honestly support?",
+    "why": "Include the unit and time period. A confirmed estimate or no number is fine.",
+    "inputType": "textarea",
+    "required": false,
+    "priority": 80,
+    "destination": "experience.metric",
+    "conditions": [
+      {
+        "questionId": "experience.summary",
+        "operator": "exists"
+      }
+    ],
+    "followUps": [],
+    "resumeSections": [
+      "experience"
+    ],
+    "careerDimensions": [
+      "evidence"
+    ],
+    "aiFollowUp": true,
+    "validation": {
+      "maxLength": 1800,
+      "minLength": 2
+    },
+    "scope": "experience",
+    "metric": true,
+    "example": "For example: about 8–12 customers per shift, based on the daily log."
+  },
+  {
+    "id": "experience.team",
+    "category": "experience",
+    "text": "Who did you work with, and what was your role?",
+    "why": "Distinguishes collaboration, support, and ownership.",
+    "inputType": "textarea",
+    "required": false,
+    "priority": 63,
+    "destination": "experience.team",
+    "conditions": [
+      {
+        "questionId": "experience.summary",
+        "operator": "exists"
+      }
+    ],
+    "followUps": [],
+    "resumeSections": [
+      "experience"
+    ],
+    "careerDimensions": [
+      "evidence"
+    ],
+    "aiFollowUp": true,
+    "validation": {
+      "maxLength": 1800,
+      "minLength": 2
+    },
+    "scope": "experience",
+    "metric": false
+  },
+  {
+    "id": "experience.challenge",
+    "category": "experience",
+    "text": "What was the hardest part, and how did you solve it?",
+    "why": "Shows the thinking behind the task.",
+    "inputType": "textarea",
+    "required": false,
+    "priority": 70,
+    "destination": "experience.challenge",
+    "conditions": [
+      {
+        "questionId": "experience.summary",
+        "operator": "exists"
+      }
+    ],
+    "followUps": [],
+    "resumeSections": [
+      "experience"
+    ],
+    "careerDimensions": [
+      "evidence"
+    ],
+    "aiFollowUp": true,
+    "validation": {
+      "maxLength": 1800,
+      "minLength": 2
+    },
+    "scope": "experience",
+    "metric": false
+  },
+  {
+    "id": "experience.communication",
+    "category": "experience",
+    "text": "When did you explain your work to someone else?",
+    "why": "Communication should be shown through a concrete situation.",
+    "inputType": "textarea",
+    "required": false,
+    "priority": 47,
+    "destination": "experience.communication",
+    "conditions": [
+      {
+        "questionId": "experience.summary",
+        "operator": "exists"
+      }
+    ],
+    "followUps": [],
+    "resumeSections": [
+      "experience"
+    ],
+    "careerDimensions": [
+      "evidence"
+    ],
+    "aiFollowUp": true,
+    "validation": {
+      "maxLength": 1800,
+      "minLength": 2
+    },
+    "scope": "experience",
+    "metric": false
+  },
+  {
+    "id": "experience.learning",
+    "category": "experience",
+    "text": "What did you learn or become able to do independently?",
+    "why": "Helps distinguish emerging skills from demonstrated independence.",
+    "inputType": "textarea",
+    "required": false,
+    "priority": 36,
+    "destination": "experience.learning",
+    "conditions": [
+      {
+        "questionId": "experience.summary",
+        "operator": "exists"
+      }
+    ],
+    "followUps": [],
+    "resumeSections": [
+      "experience"
+    ],
+    "careerDimensions": [
+      "evidence"
+    ],
+    "aiFollowUp": true,
+    "validation": {
+      "maxLength": 1800,
+      "minLength": 2
+    },
+    "scope": "experience",
+    "metric": false
+  },
+  {
+    "id": "experience.link",
+    "category": "experience",
+    "text": "Is there a public link or artifact you can share?",
+    "why": "Only share work you have permission to disclose.",
+    "inputType": "url",
+    "required": false,
+    "priority": 22,
+    "destination": "experience.link",
+    "conditions": [
+      {
+        "questionId": "experience.summary",
+        "operator": "exists"
+      }
+    ],
+    "followUps": [],
+    "resumeSections": [
+      "experience"
+    ],
+    "careerDimensions": [
+      "evidence"
+    ],
+    "aiFollowUp": true,
+    "validation": {
+      "maxLength": 1800,
+      "minLength": 2
+    },
+    "scope": "experience",
+    "metric": false
+  },
+  {
+    "id": "project.summary",
+    "category": "projects",
+    "text": "How would you describe this experience in your own words?",
+    "why": "A rough description is enough to begin. We will uncover the specifics together.",
+    "inputType": "textarea",
+    "required": false,
+    "priority": 90,
+    "destination": "project.summary",
+    "conditions": [],
+    "followUps": [
+      "project.action",
+      "project.tools",
+      "project.outcome"
+    ],
+    "resumeSections": [
+      "projects"
+    ],
+    "careerDimensions": [
+      "evidence"
+    ],
+    "aiFollowUp": true,
+    "validation": {
+      "maxLength": 1800,
+      "minLength": 2
+    },
+    "scope": "project",
+    "metric": false
+  },
+  {
+    "id": "project.problem",
+    "category": "projects",
+    "text": "What problem or need were you working on?",
+    "why": "Context helps explain why your contribution mattered.",
+    "inputType": "textarea",
+    "required": false,
+    "priority": 87,
+    "destination": "project.problem",
+    "conditions": [
+      {
+        "questionId": "project.summary",
+        "operator": "exists"
+      }
+    ],
+    "followUps": [],
+    "resumeSections": [
+      "projects"
+    ],
+    "careerDimensions": [
+      "evidence"
+    ],
+    "aiFollowUp": true,
+    "validation": {
+      "maxLength": 1800,
+      "minLength": 2
+    },
+    "scope": "project",
+    "metric": false
+  },
+  {
+    "id": "project.action",
+    "category": "projects",
+    "text": "What did you personally do?",
+    "why": "Separate your own contribution from the overall team result.",
+    "inputType": "textarea",
+    "required": true,
+    "priority": 89,
+    "destination": "project.action",
+    "conditions": [
+      {
+        "questionId": "project.summary",
+        "operator": "exists"
+      }
+    ],
+    "followUps": [],
+    "resumeSections": [
+      "projects"
+    ],
+    "careerDimensions": [
+      "evidence"
+    ],
+    "aiFollowUp": true,
+    "validation": {
+      "maxLength": 1800,
+      "minLength": 2
+    },
+    "scope": "project",
+    "metric": false
+  },
+  {
+    "id": "project.tools",
+    "category": "projects",
+    "text": "What tools, technologies, or methods did you actually use?",
+    "why": "Links concrete work to skills; a mention is not an expert rating.",
+    "inputType": "textarea",
+    "required": false,
+    "priority": 84,
+    "destination": "project.tools",
+    "conditions": [
+      {
+        "questionId": "project.summary",
+        "operator": "exists"
+      }
+    ],
+    "followUps": [],
+    "resumeSections": [
+      "projects"
+    ],
+    "careerDimensions": [
+      "evidence"
+    ],
+    "aiFollowUp": true,
+    "validation": {
+      "maxLength": 1800,
+      "minLength": 2
+    },
+    "scope": "project",
+    "metric": false
+  },
+  {
+    "id": "project.outcome",
+    "category": "projects",
+    "text": "What happened as a result of your work?",
+    "why": "A qualitative result is useful when there is no reliable number.",
+    "inputType": "textarea",
+    "required": false,
+    "priority": 83,
+    "destination": "project.outcome",
+    "conditions": [
+      {
+        "questionId": "project.summary",
+        "operator": "exists"
+      }
+    ],
+    "followUps": [],
+    "resumeSections": [
+      "projects"
+    ],
+    "careerDimensions": [
+      "evidence"
+    ],
+    "aiFollowUp": true,
+    "validation": {
+      "maxLength": 1800,
+      "minLength": 2
+    },
+    "scope": "project",
+    "metric": false
+  },
+  {
+    "id": "project.metric",
+    "category": "projects",
+    "text": "Is there a number or range you can honestly support?",
+    "why": "Include the unit and time period. A confirmed estimate or no number is fine.",
+    "inputType": "textarea",
+    "required": false,
+    "priority": 80,
+    "destination": "project.metric",
+    "conditions": [
+      {
+        "questionId": "project.summary",
+        "operator": "exists"
+      }
+    ],
+    "followUps": [],
+    "resumeSections": [
+      "projects"
+    ],
+    "careerDimensions": [
+      "evidence"
+    ],
+    "aiFollowUp": true,
+    "validation": {
+      "maxLength": 1800,
+      "minLength": 2
+    },
+    "scope": "project",
+    "metric": true,
+    "example": "For example: about 8–12 customers per shift, based on the daily log."
+  },
+  {
+    "id": "project.team",
+    "category": "projects",
+    "text": "Who did you work with, and what was your role?",
+    "why": "Distinguishes collaboration, support, and ownership.",
+    "inputType": "textarea",
+    "required": false,
+    "priority": 63,
+    "destination": "project.team",
+    "conditions": [
+      {
+        "questionId": "project.summary",
+        "operator": "exists"
+      }
+    ],
+    "followUps": [],
+    "resumeSections": [
+      "projects"
+    ],
+    "careerDimensions": [
+      "evidence"
+    ],
+    "aiFollowUp": true,
+    "validation": {
+      "maxLength": 1800,
+      "minLength": 2
+    },
+    "scope": "project",
+    "metric": false
+  },
+  {
+    "id": "project.challenge",
+    "category": "projects",
+    "text": "What was the hardest part, and how did you solve it?",
+    "why": "Shows the thinking behind the task.",
+    "inputType": "textarea",
+    "required": false,
+    "priority": 70,
+    "destination": "project.challenge",
+    "conditions": [
+      {
+        "questionId": "project.summary",
+        "operator": "exists"
+      }
+    ],
+    "followUps": [],
+    "resumeSections": [
+      "projects"
+    ],
+    "careerDimensions": [
+      "evidence"
+    ],
+    "aiFollowUp": true,
+    "validation": {
+      "maxLength": 1800,
+      "minLength": 2
+    },
+    "scope": "project",
+    "metric": false
+  },
+  {
+    "id": "project.communication",
+    "category": "projects",
+    "text": "When did you explain your work to someone else?",
+    "why": "Communication should be shown through a concrete situation.",
+    "inputType": "textarea",
+    "required": false,
+    "priority": 47,
+    "destination": "project.communication",
+    "conditions": [
+      {
+        "questionId": "project.summary",
+        "operator": "exists"
+      }
+    ],
+    "followUps": [],
+    "resumeSections": [
+      "projects"
+    ],
+    "careerDimensions": [
+      "evidence"
+    ],
+    "aiFollowUp": true,
+    "validation": {
+      "maxLength": 1800,
+      "minLength": 2
+    },
+    "scope": "project",
+    "metric": false
+  },
+  {
+    "id": "project.learning",
+    "category": "projects",
+    "text": "What did you learn or become able to do independently?",
+    "why": "Helps distinguish emerging skills from demonstrated independence.",
+    "inputType": "textarea",
+    "required": false,
+    "priority": 36,
+    "destination": "project.learning",
+    "conditions": [
+      {
+        "questionId": "project.summary",
+        "operator": "exists"
+      }
+    ],
+    "followUps": [],
+    "resumeSections": [
+      "projects"
+    ],
+    "careerDimensions": [
+      "evidence"
+    ],
+    "aiFollowUp": true,
+    "validation": {
+      "maxLength": 1800,
+      "minLength": 2
+    },
+    "scope": "project",
+    "metric": false
+  },
+  {
+    "id": "project.link",
+    "category": "projects",
+    "text": "Is there a public link or artifact you can share?",
+    "why": "Only share work you have permission to disclose.",
+    "inputType": "url",
+    "required": false,
+    "priority": 22,
+    "destination": "project.link",
+    "conditions": [
+      {
+        "questionId": "project.summary",
+        "operator": "exists"
+      }
+    ],
+    "followUps": [],
+    "resumeSections": [
+      "projects"
+    ],
+    "careerDimensions": [
+      "evidence"
+    ],
+    "aiFollowUp": true,
+    "validation": {
+      "maxLength": 1800,
+      "minLength": 2
+    },
+    "scope": "project",
+    "metric": false
+  },
+  {
+    "id": "activity.summary",
+    "category": "activities",
+    "text": "How would you describe this experience in your own words?",
+    "why": "A rough description is enough to begin. We will uncover the specifics together.",
+    "inputType": "textarea",
+    "required": false,
+    "priority": 90,
+    "destination": "activity.summary",
+    "conditions": [],
+    "followUps": [
+      "activity.action",
+      "activity.tools",
+      "activity.outcome"
+    ],
+    "resumeSections": [
+      "activities"
+    ],
+    "careerDimensions": [
+      "evidence"
+    ],
+    "aiFollowUp": true,
+    "validation": {
+      "maxLength": 1800,
+      "minLength": 2
+    },
+    "scope": "activity",
+    "metric": false
+  },
+  {
+    "id": "activity.problem",
+    "category": "activities",
+    "text": "What problem or need were you working on?",
+    "why": "Context helps explain why your contribution mattered.",
+    "inputType": "textarea",
+    "required": false,
+    "priority": 87,
+    "destination": "activity.problem",
+    "conditions": [
+      {
+        "questionId": "activity.summary",
+        "operator": "exists"
+      }
+    ],
+    "followUps": [],
+    "resumeSections": [
+      "activities"
+    ],
+    "careerDimensions": [
+      "evidence"
+    ],
+    "aiFollowUp": true,
+    "validation": {
+      "maxLength": 1800,
+      "minLength": 2
+    },
+    "scope": "activity",
+    "metric": false
+  },
+  {
+    "id": "activity.action",
+    "category": "activities",
+    "text": "What did you personally do?",
+    "why": "Separate your own contribution from the overall team result.",
+    "inputType": "textarea",
+    "required": true,
+    "priority": 89,
+    "destination": "activity.action",
+    "conditions": [
+      {
+        "questionId": "activity.summary",
+        "operator": "exists"
+      }
+    ],
+    "followUps": [],
+    "resumeSections": [
+      "activities"
+    ],
+    "careerDimensions": [
+      "evidence"
+    ],
+    "aiFollowUp": true,
+    "validation": {
+      "maxLength": 1800,
+      "minLength": 2
+    },
+    "scope": "activity",
+    "metric": false
+  },
+  {
+    "id": "activity.tools",
+    "category": "activities",
+    "text": "What tools, technologies, or methods did you actually use?",
+    "why": "Links concrete work to skills; a mention is not an expert rating.",
+    "inputType": "textarea",
+    "required": false,
+    "priority": 84,
+    "destination": "activity.tools",
+    "conditions": [
+      {
+        "questionId": "activity.summary",
+        "operator": "exists"
+      }
+    ],
+    "followUps": [],
+    "resumeSections": [
+      "activities"
+    ],
+    "careerDimensions": [
+      "evidence"
+    ],
+    "aiFollowUp": true,
+    "validation": {
+      "maxLength": 1800,
+      "minLength": 2
+    },
+    "scope": "activity",
+    "metric": false
+  },
+  {
+    "id": "activity.outcome",
+    "category": "activities",
+    "text": "What happened as a result of your work?",
+    "why": "A qualitative result is useful when there is no reliable number.",
+    "inputType": "textarea",
+    "required": false,
+    "priority": 83,
+    "destination": "activity.outcome",
+    "conditions": [
+      {
+        "questionId": "activity.summary",
+        "operator": "exists"
+      }
+    ],
+    "followUps": [],
+    "resumeSections": [
+      "activities"
+    ],
+    "careerDimensions": [
+      "evidence"
+    ],
+    "aiFollowUp": true,
+    "validation": {
+      "maxLength": 1800,
+      "minLength": 2
+    },
+    "scope": "activity",
+    "metric": false
+  },
+  {
+    "id": "activity.metric",
+    "category": "activities",
+    "text": "Is there a number or range you can honestly support?",
+    "why": "Include the unit and time period. A confirmed estimate or no number is fine.",
+    "inputType": "textarea",
+    "required": false,
+    "priority": 80,
+    "destination": "activity.metric",
+    "conditions": [
+      {
+        "questionId": "activity.summary",
+        "operator": "exists"
+      }
+    ],
+    "followUps": [],
+    "resumeSections": [
+      "activities"
+    ],
+    "careerDimensions": [
+      "evidence"
+    ],
+    "aiFollowUp": true,
+    "validation": {
+      "maxLength": 1800,
+      "minLength": 2
+    },
+    "scope": "activity",
+    "metric": true,
+    "example": "For example: about 8–12 customers per shift, based on the daily log."
+  },
+  {
+    "id": "activity.team",
+    "category": "activities",
+    "text": "Who did you work with, and what was your role?",
+    "why": "Distinguishes collaboration, support, and ownership.",
+    "inputType": "textarea",
+    "required": false,
+    "priority": 63,
+    "destination": "activity.team",
+    "conditions": [
+      {
+        "questionId": "activity.summary",
+        "operator": "exists"
+      }
+    ],
+    "followUps": [],
+    "resumeSections": [
+      "activities"
+    ],
+    "careerDimensions": [
+      "evidence"
+    ],
+    "aiFollowUp": true,
+    "validation": {
+      "maxLength": 1800,
+      "minLength": 2
+    },
+    "scope": "activity",
+    "metric": false
+  },
+  {
+    "id": "activity.challenge",
+    "category": "activities",
+    "text": "What was the hardest part, and how did you solve it?",
+    "why": "Shows the thinking behind the task.",
+    "inputType": "textarea",
+    "required": false,
+    "priority": 70,
+    "destination": "activity.challenge",
+    "conditions": [
+      {
+        "questionId": "activity.summary",
+        "operator": "exists"
+      }
+    ],
+    "followUps": [],
+    "resumeSections": [
+      "activities"
+    ],
+    "careerDimensions": [
+      "evidence"
+    ],
+    "aiFollowUp": true,
+    "validation": {
+      "maxLength": 1800,
+      "minLength": 2
+    },
+    "scope": "activity",
+    "metric": false
+  },
+  {
+    "id": "activity.communication",
+    "category": "activities",
+    "text": "When did you explain your work to someone else?",
+    "why": "Communication should be shown through a concrete situation.",
+    "inputType": "textarea",
+    "required": false,
+    "priority": 47,
+    "destination": "activity.communication",
+    "conditions": [
+      {
+        "questionId": "activity.summary",
+        "operator": "exists"
+      }
+    ],
+    "followUps": [],
+    "resumeSections": [
+      "activities"
+    ],
+    "careerDimensions": [
+      "evidence"
+    ],
+    "aiFollowUp": true,
+    "validation": {
+      "maxLength": 1800,
+      "minLength": 2
+    },
+    "scope": "activity",
+    "metric": false
+  },
+  {
+    "id": "activity.learning",
+    "category": "activities",
+    "text": "What did you learn or become able to do independently?",
+    "why": "Helps distinguish emerging skills from demonstrated independence.",
+    "inputType": "textarea",
+    "required": false,
+    "priority": 36,
+    "destination": "activity.learning",
+    "conditions": [
+      {
+        "questionId": "activity.summary",
+        "operator": "exists"
+      }
+    ],
+    "followUps": [],
+    "resumeSections": [
+      "activities"
+    ],
+    "careerDimensions": [
+      "evidence"
+    ],
+    "aiFollowUp": true,
+    "validation": {
+      "maxLength": 1800,
+      "minLength": 2
+    },
+    "scope": "activity",
+    "metric": false
+  },
+  {
+    "id": "activity.link",
+    "category": "activities",
+    "text": "Is there a public link or artifact you can share?",
+    "why": "Only share work you have permission to disclose.",
+    "inputType": "url",
+    "required": false,
+    "priority": 22,
+    "destination": "activity.link",
+    "conditions": [
+      {
+        "questionId": "activity.summary",
+        "operator": "exists"
+      }
+    ],
+    "followUps": [],
+    "resumeSections": [
+      "activities"
+    ],
+    "careerDimensions": [
+      "evidence"
+    ],
+    "aiFollowUp": true,
+    "validation": {
+      "maxLength": 1800,
+      "minLength": 2
+    },
+    "scope": "activity",
+    "metric": false
+  },
+  {
+    "id": "education.summary",
+    "category": "education",
+    "text": "How would you describe this experience in your own words?",
+    "why": "A rough description is enough to begin. We will uncover the specifics together.",
+    "inputType": "textarea",
+    "required": false,
+    "priority": 90,
+    "destination": "education.summary",
+    "conditions": [],
+    "followUps": [
+      "education.action",
+      "education.tools",
+      "education.outcome"
+    ],
+    "resumeSections": [
+      "education"
+    ],
+    "careerDimensions": [
+      "evidence"
+    ],
+    "aiFollowUp": true,
+    "validation": {
+      "maxLength": 1800,
+      "minLength": 2
+    },
+    "scope": "education",
+    "metric": false
+  },
+  {
+    "id": "education.problem",
+    "category": "education",
+    "text": "What problem or need were you working on?",
+    "why": "Context helps explain why your contribution mattered.",
+    "inputType": "textarea",
+    "required": false,
+    "priority": 87,
+    "destination": "education.problem",
+    "conditions": [
+      {
+        "questionId": "education.summary",
+        "operator": "exists"
+      }
+    ],
+    "followUps": [],
+    "resumeSections": [
+      "education"
+    ],
+    "careerDimensions": [
+      "evidence"
+    ],
+    "aiFollowUp": true,
+    "validation": {
+      "maxLength": 1800,
+      "minLength": 2
+    },
+    "scope": "education",
+    "metric": false
+  },
+  {
+    "id": "education.action",
+    "category": "education",
+    "text": "What did you personally do?",
+    "why": "Separate your own contribution from the overall team result.",
+    "inputType": "textarea",
+    "required": true,
+    "priority": 89,
+    "destination": "education.action",
+    "conditions": [
+      {
+        "questionId": "education.summary",
+        "operator": "exists"
+      }
+    ],
+    "followUps": [],
+    "resumeSections": [
+      "education"
+    ],
+    "careerDimensions": [
+      "evidence"
+    ],
+    "aiFollowUp": true,
+    "validation": {
+      "maxLength": 1800,
+      "minLength": 2
+    },
+    "scope": "education",
+    "metric": false
+  },
+  {
+    "id": "education.tools",
+    "category": "education",
+    "text": "What tools, technologies, or methods did you actually use?",
+    "why": "Links concrete work to skills; a mention is not an expert rating.",
+    "inputType": "textarea",
+    "required": false,
+    "priority": 84,
+    "destination": "education.tools",
+    "conditions": [
+      {
+        "questionId": "education.summary",
+        "operator": "exists"
+      }
+    ],
+    "followUps": [],
+    "resumeSections": [
+      "education"
+    ],
+    "careerDimensions": [
+      "evidence"
+    ],
+    "aiFollowUp": true,
+    "validation": {
+      "maxLength": 1800,
+      "minLength": 2
+    },
+    "scope": "education",
+    "metric": false
+  },
+  {
+    "id": "education.outcome",
+    "category": "education",
+    "text": "What happened as a result of your work?",
+    "why": "A qualitative result is useful when there is no reliable number.",
+    "inputType": "textarea",
+    "required": false,
+    "priority": 83,
+    "destination": "education.outcome",
+    "conditions": [
+      {
+        "questionId": "education.summary",
+        "operator": "exists"
+      }
+    ],
+    "followUps": [],
+    "resumeSections": [
+      "education"
+    ],
+    "careerDimensions": [
+      "evidence"
+    ],
+    "aiFollowUp": true,
+    "validation": {
+      "maxLength": 1800,
+      "minLength": 2
+    },
+    "scope": "education",
+    "metric": false
+  },
+  {
+    "id": "education.metric",
+    "category": "education",
+    "text": "Is there a number or range you can honestly support?",
+    "why": "Include the unit and time period. A confirmed estimate or no number is fine.",
+    "inputType": "textarea",
+    "required": false,
+    "priority": 80,
+    "destination": "education.metric",
+    "conditions": [
+      {
+        "questionId": "education.summary",
+        "operator": "exists"
+      }
+    ],
+    "followUps": [],
+    "resumeSections": [
+      "education"
+    ],
+    "careerDimensions": [
+      "evidence"
+    ],
+    "aiFollowUp": true,
+    "validation": {
+      "maxLength": 1800,
+      "minLength": 2
+    },
+    "scope": "education",
+    "metric": true,
+    "example": "For example: about 8–12 customers per shift, based on the daily log."
+  },
+  {
+    "id": "education.team",
+    "category": "education",
+    "text": "Who did you work with, and what was your role?",
+    "why": "Distinguishes collaboration, support, and ownership.",
+    "inputType": "textarea",
+    "required": false,
+    "priority": 63,
+    "destination": "education.team",
+    "conditions": [
+      {
+        "questionId": "education.summary",
+        "operator": "exists"
+      }
+    ],
+    "followUps": [],
+    "resumeSections": [
+      "education"
+    ],
+    "careerDimensions": [
+      "evidence"
+    ],
+    "aiFollowUp": true,
+    "validation": {
+      "maxLength": 1800,
+      "minLength": 2
+    },
+    "scope": "education",
+    "metric": false
+  },
+  {
+    "id": "education.challenge",
+    "category": "education",
+    "text": "What was the hardest part, and how did you solve it?",
+    "why": "Shows the thinking behind the task.",
+    "inputType": "textarea",
+    "required": false,
+    "priority": 70,
+    "destination": "education.challenge",
+    "conditions": [
+      {
+        "questionId": "education.summary",
+        "operator": "exists"
+      }
+    ],
+    "followUps": [],
+    "resumeSections": [
+      "education"
+    ],
+    "careerDimensions": [
+      "evidence"
+    ],
+    "aiFollowUp": true,
+    "validation": {
+      "maxLength": 1800,
+      "minLength": 2
+    },
+    "scope": "education",
+    "metric": false
+  },
+  {
+    "id": "education.communication",
+    "category": "education",
+    "text": "When did you explain your work to someone else?",
+    "why": "Communication should be shown through a concrete situation.",
+    "inputType": "textarea",
+    "required": false,
+    "priority": 47,
+    "destination": "education.communication",
+    "conditions": [
+      {
+        "questionId": "education.summary",
+        "operator": "exists"
+      }
+    ],
+    "followUps": [],
+    "resumeSections": [
+      "education"
+    ],
+    "careerDimensions": [
+      "evidence"
+    ],
+    "aiFollowUp": true,
+    "validation": {
+      "maxLength": 1800,
+      "minLength": 2
+    },
+    "scope": "education",
+    "metric": false
+  },
+  {
+    "id": "education.learning",
+    "category": "education",
+    "text": "What did you learn or become able to do independently?",
+    "why": "Helps distinguish emerging skills from demonstrated independence.",
+    "inputType": "textarea",
+    "required": false,
+    "priority": 36,
+    "destination": "education.learning",
+    "conditions": [
+      {
+        "questionId": "education.summary",
+        "operator": "exists"
+      }
+    ],
+    "followUps": [],
+    "resumeSections": [
+      "education"
+    ],
+    "careerDimensions": [
+      "evidence"
+    ],
+    "aiFollowUp": true,
+    "validation": {
+      "maxLength": 1800,
+      "minLength": 2
+    },
+    "scope": "education",
+    "metric": false
+  },
+  {
+    "id": "education.link",
+    "category": "education",
+    "text": "Is there a public link or artifact you can share?",
+    "why": "Only share work you have permission to disclose.",
+    "inputType": "url",
+    "required": false,
+    "priority": 22,
+    "destination": "education.link",
+    "conditions": [
+      {
+        "questionId": "education.summary",
+        "operator": "exists"
+      }
+    ],
+    "followUps": [],
+    "resumeSections": [
+      "education"
+    ],
+    "careerDimensions": [
+      "evidence"
+    ],
+    "aiFollowUp": true,
+    "validation": {
+      "maxLength": 1800,
+      "minLength": 2
+    },
+    "scope": "education",
+    "metric": false
+  },
+  {
+    "id": "experience.repair",
+    "category": "experience",
+    "text": "Which devices and hardware or software problems did you diagnose?",
+    "why": "Repair work can demonstrate systematic troubleshooting.",
+    "inputType": "textarea",
+    "required": false,
+    "priority": 88,
+    "destination": "experience.repair",
+    "conditions": [
+      {
+        "questionId": "experience.summary",
+        "operator": "includes",
+        "value": "repair|fixed phone|fixed laptop|fixed computer|diagnos"
+      }
+    ],
+    "followUps": [],
+    "resumeSections": [
+      "experience"
+    ],
+    "careerDimensions": [
+      "evidence"
+    ],
+    "aiFollowUp": true,
+    "validation": {
+      "maxLength": 1800,
+      "minLength": 2
+    },
+    "scope": "experience"
+  },
+  {
+    "id": "experience.recovery",
+    "category": "experience",
+    "text": "Did you recover data or handle sensitive information? What precautions did you take?",
+    "why": "Describe approved methods without exposing customer data.",
+    "inputType": "textarea",
+    "required": false,
+    "priority": 74,
+    "destination": "experience.recovery",
+    "conditions": [
+      {
+        "questionId": "experience.summary",
+        "operator": "includes",
+        "value": "repair|fixed phone|fixed laptop|fixed computer|diagnos"
+      }
+    ],
+    "followUps": [],
+    "resumeSections": [
+      "experience"
+    ],
+    "careerDimensions": [
+      "evidence"
+    ],
+    "aiFollowUp": true,
+    "validation": {
+      "maxLength": 1800,
+      "minLength": 2
+    },
+    "scope": "experience"
+  },
+  {
+    "id": "experience.customers",
+    "category": "experience",
+    "text": "What did you help customers understand or decide?",
+    "why": "Specific customer situations provide communication evidence.",
+    "inputType": "textarea",
+    "required": false,
+    "priority": 61,
+    "destination": "experience.customers",
+    "conditions": [
+      {
+        "questionId": "experience.summary",
+        "operator": "exists"
+      }
+    ],
+    "followUps": [],
+    "resumeSections": [
+      "experience"
+    ],
+    "careerDimensions": [
+      "evidence"
+    ],
+    "aiFollowUp": true,
+    "validation": {
+      "maxLength": 1800,
+      "minLength": 2
+    },
+    "scope": "experience"
+  },
+  {
+    "id": "experience.automation",
+    "category": "experience",
+    "text": "Did you automate or simplify any repetitive task?",
+    "why": "Capture the original process and what you changed.",
+    "inputType": "textarea",
+    "required": false,
+    "priority": 66,
+    "destination": "experience.automation",
+    "conditions": [
+      {
+        "questionId": "experience.summary",
+        "operator": "exists"
+      }
+    ],
+    "followUps": [],
+    "resumeSections": [
+      "experience"
+    ],
+    "careerDimensions": [
+      "evidence"
+    ],
+    "aiFollowUp": true,
+    "validation": {
+      "maxLength": 1800,
+      "minLength": 2
+    },
+    "scope": "experience"
+  },
+  {
+    "id": "experience.ownership",
+    "category": "experience",
+    "text": "Were you responsible for opening, closing, inventory, or working independently?",
+    "why": "Operational responsibility can demonstrate reliability.",
+    "inputType": "textarea",
+    "required": false,
+    "priority": 62,
+    "destination": "experience.ownership",
+    "conditions": [
+      {
+        "questionId": "experience.summary",
+        "operator": "exists"
+      }
+    ],
+    "followUps": [],
+    "resumeSections": [
+      "experience"
+    ],
+    "careerDimensions": [
+      "evidence"
+    ],
+    "aiFollowUp": true,
+    "validation": {
+      "maxLength": 1800,
+      "minLength": 2
+    },
+    "scope": "experience"
+  },
+  {
+    "id": "experience.training",
+    "category": "experience",
+    "text": "Did you train someone? What did you teach and how?",
+    "why": "Training can provide leadership evidence without inflating your title.",
+    "inputType": "textarea",
+    "required": false,
+    "priority": 59,
+    "destination": "experience.training",
+    "conditions": [
+      {
+        "questionId": "experience.summary",
+        "operator": "exists"
+      }
+    ],
+    "followUps": [],
+    "resumeSections": [
+      "experience"
+    ],
+    "careerDimensions": [
+      "evidence"
+    ],
+    "aiFollowUp": true,
+    "validation": {
+      "maxLength": 1800,
+      "minLength": 2
+    },
+    "scope": "experience"
+  },
+  {
+    "id": "experience.improvement",
+    "category": "experience",
+    "text": "Did your work change turnaround time, errors, cost, or reliability?",
+    "why": "Ask for a baseline before describing an improvement.",
+    "inputType": "textarea",
+    "required": false,
+    "priority": 68,
+    "destination": "experience.improvement",
+    "conditions": [
+      {
+        "questionId": "experience.summary",
+        "operator": "exists"
+      }
+    ],
+    "followUps": [],
+    "resumeSections": [
+      "experience"
+    ],
+    "careerDimensions": [
+      "evidence"
+    ],
+    "aiFollowUp": true,
+    "validation": {
+      "maxLength": 1800,
+      "minLength": 2
+    },
+    "scope": "experience"
+  },
+  {
+    "id": "experience.frequency",
+    "category": "experience",
+    "text": "How often did you perform this work?",
+    "why": "Frequency gives scope even when there is no formal impact metric.",
+    "inputType": "textarea",
+    "required": false,
+    "priority": 52,
+    "destination": "experience.frequency",
+    "conditions": [
+      {
+        "questionId": "experience.summary",
+        "operator": "exists"
+      }
+    ],
+    "followUps": [],
+    "resumeSections": [
+      "experience"
+    ],
+    "careerDimensions": [
+      "evidence"
+    ],
+    "aiFollowUp": true,
+    "validation": {
+      "maxLength": 1800,
+      "minLength": 2
+    },
+    "scope": "experience"
+  },
+  {
+    "id": "project.architecture",
+    "category": "projects",
+    "text": "How did the main parts of your project fit together?",
+    "why": "Shows understanding beyond listing a technology stack.",
+    "inputType": "textarea",
+    "required": false,
+    "priority": 74,
+    "destination": "project.architecture",
+    "conditions": [
+      {
+        "questionId": "project.summary",
+        "operator": "exists"
+      }
+    ],
+    "followUps": [],
+    "resumeSections": [
+      "projects"
+    ],
+    "careerDimensions": [
+      "evidence"
+    ],
+    "aiFollowUp": true,
+    "validation": {
+      "maxLength": 1800,
+      "minLength": 2
+    },
+    "scope": "project"
+  },
+  {
+    "id": "project.frontend",
+    "category": "projects",
+    "text": "What did you implement in the user interface?",
+    "why": "Identify your own design or frontend contribution.",
+    "inputType": "textarea",
+    "required": false,
+    "priority": 59,
+    "destination": "project.frontend",
+    "conditions": [
+      {
+        "questionId": "project.summary",
+        "operator": "exists"
+      }
+    ],
+    "followUps": [],
+    "resumeSections": [
+      "projects"
+    ],
+    "careerDimensions": [
+      "evidence"
+    ],
+    "aiFollowUp": true,
+    "validation": {
+      "maxLength": 1800,
+      "minLength": 2
+    },
+    "scope": "project"
+  },
+  {
+    "id": "project.backend",
+    "category": "projects",
+    "text": "What happened on the server, and what did you implement?",
+    "why": "Distinguishes an API integration from building a backend.",
+    "inputType": "textarea",
+    "required": false,
+    "priority": 62,
+    "destination": "project.backend",
+    "conditions": [
+      {
+        "questionId": "project.summary",
+        "operator": "exists"
+      }
+    ],
+    "followUps": [],
+    "resumeSections": [
+      "projects"
+    ],
+    "careerDimensions": [
+      "evidence"
+    ],
+    "aiFollowUp": true,
+    "validation": {
+      "maxLength": 1800,
+      "minLength": 2
+    },
+    "scope": "project"
+  },
+  {
+    "id": "project.database",
+    "category": "projects",
+    "text": "How did you structure, query, or validate the data?",
+    "why": "Database decisions can provide concrete technical evidence.",
+    "inputType": "textarea",
+    "required": false,
+    "priority": 67,
+    "destination": "project.database",
+    "conditions": [
+      {
+        "questionId": "project.summary",
+        "operator": "exists"
+      }
+    ],
+    "followUps": [],
+    "resumeSections": [
+      "projects"
+    ],
+    "careerDimensions": [
+      "evidence"
+    ],
+    "aiFollowUp": true,
+    "validation": {
+      "maxLength": 1800,
+      "minLength": 2
+    },
+    "scope": "project"
+  },
+  {
+    "id": "project.testing",
+    "category": "projects",
+    "text": "How did you test it, and what failure did a test catch?",
+    "why": "Specific verification is stronger than saying it was reliable.",
+    "inputType": "textarea",
+    "required": false,
+    "priority": 76,
+    "destination": "project.testing",
+    "conditions": [
+      {
+        "questionId": "project.summary",
+        "operator": "exists"
+      }
+    ],
+    "followUps": [],
+    "resumeSections": [
+      "projects"
+    ],
+    "careerDimensions": [
+      "evidence"
+    ],
+    "aiFollowUp": true,
+    "validation": {
+      "maxLength": 1800,
+      "minLength": 2
+    },
+    "scope": "project"
+  },
+  {
+    "id": "project.security",
+    "category": "projects",
+    "text": "What permissions, authentication, or security risks did you address?",
+    "why": "Name controls you implemented and verified.",
+    "inputType": "textarea",
+    "required": false,
+    "priority": 72,
+    "destination": "project.security",
+    "conditions": [
+      {
+        "questionId": "project.summary",
+        "operator": "exists"
+      }
+    ],
+    "followUps": [],
+    "resumeSections": [
+      "projects"
+    ],
+    "careerDimensions": [
+      "evidence"
+    ],
+    "aiFollowUp": true,
+    "validation": {
+      "maxLength": 1800,
+      "minLength": 2
+    },
+    "scope": "project"
+  },
+  {
+    "id": "project.deployment",
+    "category": "projects",
+    "text": "Where did you deploy it, and what did you manage yourself?",
+    "why": "A local prototype and a deployed service are different claims.",
+    "inputType": "textarea",
+    "required": false,
+    "priority": 55,
+    "destination": "project.deployment",
+    "conditions": [
+      {
+        "questionId": "project.summary",
+        "operator": "exists"
+      }
+    ],
+    "followUps": [],
+    "resumeSections": [
+      "projects"
+    ],
+    "careerDimensions": [
+      "evidence"
+    ],
+    "aiFollowUp": true,
+    "validation": {
+      "maxLength": 1800,
+      "minLength": 2
+    },
+    "scope": "project"
+  },
+  {
+    "id": "project.performance",
+    "category": "projects",
+    "text": "Did you measure speed, resource use, or reliability?",
+    "why": "State the test conditions and baseline; do not imply unmeasured gains.",
+    "inputType": "textarea",
+    "required": false,
+    "priority": 53,
+    "destination": "project.performance",
+    "conditions": [
+      {
+        "questionId": "project.summary",
+        "operator": "exists"
+      }
+    ],
+    "followUps": [],
+    "resumeSections": [
+      "projects"
+    ],
+    "careerDimensions": [
+      "evidence"
+    ],
+    "aiFollowUp": true,
+    "validation": {
+      "maxLength": 1800,
+      "minLength": 2
+    },
+    "scope": "project"
+  },
+  {
+    "id": "project.data",
+    "category": "projects",
+    "text": "Where did your data come from, and how did you check its quality?",
+    "why": "Data provenance and leakage prevention matter in data and AI projects.",
+    "inputType": "textarea",
+    "required": false,
+    "priority": 86,
+    "destination": "project.data",
+    "conditions": [
+      {
+        "questionId": "career.target",
+        "operator": "equals",
+        "value": "Data & AI"
+      }
+    ],
+    "followUps": [],
+    "resumeSections": [
+      "projects"
+    ],
+    "careerDimensions": [
+      "evidence"
+    ],
+    "aiFollowUp": true,
+    "validation": {
+      "maxLength": 1800,
+      "minLength": 2
+    },
+    "scope": "project"
+  },
+  {
+    "id": "project.evaluation",
+    "category": "projects",
+    "text": "How did you evaluate the model or analysis, and against what baseline?",
+    "why": "Avoid unsupported accuracy claims and test-set leakage.",
+    "inputType": "textarea",
+    "required": false,
+    "priority": 85,
+    "destination": "project.evaluation",
+    "conditions": [
+      {
+        "questionId": "career.target",
+        "operator": "equals",
+        "value": "Data & AI"
+      }
+    ],
+    "followUps": [],
+    "resumeSections": [
+      "projects"
+    ],
+    "careerDimensions": [
+      "evidence"
+    ],
+    "aiFollowUp": true,
+    "validation": {
+      "maxLength": 1800,
+      "minLength": 2
+    },
+    "scope": "project"
+  },
+  {
+    "id": "project.threat",
+    "category": "projects",
+    "text": "What system were you allowed to assess, and what did you find?",
+    "why": "Security experience needs clear scope, permission, and remediation.",
+    "inputType": "textarea",
+    "required": false,
+    "priority": 86,
+    "destination": "project.threat",
+    "conditions": [
+      {
+        "questionId": "career.target",
+        "operator": "equals",
+        "value": "Cybersecurity"
+      }
+    ],
+    "followUps": [],
+    "resumeSections": [
+      "projects"
+    ],
+    "careerDimensions": [
+      "evidence"
+    ],
+    "aiFollowUp": true,
+    "validation": {
+      "maxLength": 1800,
+      "minLength": 2
+    },
+    "scope": "project"
+  },
+  {
+    "id": "project.engineering",
+    "category": "projects",
+    "text": "Which design tradeoff or code review changed your implementation?",
+    "why": "Software engineering includes technical judgment and collaboration.",
+    "inputType": "textarea",
+    "required": false,
+    "priority": 82,
+    "destination": "project.engineering",
+    "conditions": [
+      {
+        "questionId": "career.target",
+        "operator": "equals",
+        "value": "Software engineering"
+      }
+    ],
+    "followUps": [],
+    "resumeSections": [
+      "projects"
+    ],
+    "careerDimensions": [
+      "evidence"
+    ],
+    "aiFollowUp": true,
+    "validation": {
+      "maxLength": 1800,
+      "minLength": 2
+    },
+    "scope": "project"
+  },
+  {
+    "id": "project.systems",
+    "category": "projects",
+    "text": "How did you monitor or debug the system when something failed?",
+    "why": "Systems work is demonstrated through operation and diagnosis.",
+    "inputType": "textarea",
+    "required": false,
+    "priority": 82,
+    "destination": "project.systems",
+    "conditions": [
+      {
+        "questionId": "career.target",
+        "operator": "equals",
+        "value": "Cloud & systems"
+      }
+    ],
+    "followUps": [],
+    "resumeSections": [
+      "projects"
+    ],
+    "careerDimensions": [
+      "evidence"
+    ],
+    "aiFollowUp": true,
+    "validation": {
+      "maxLength": 1800,
+      "minLength": 2
+    },
+    "scope": "project"
+  },
+  {
+    "id": "project.hardware",
+    "category": "projects",
+    "text": "How did you design, measure, or test the physical system?",
+    "why": "Hardware claims need test conditions and your exact contribution.",
+    "inputType": "textarea",
+    "required": false,
+    "priority": 82,
+    "destination": "project.hardware",
+    "conditions": [
+      {
+        "questionId": "career.target",
+        "operator": "equals",
+        "value": "Hardware & engineering"
+      }
+    ],
+    "followUps": [],
+    "resumeSections": [
+      "projects"
+    ],
+    "careerDimensions": [
+      "evidence"
+    ],
+    "aiFollowUp": true,
+    "validation": {
+      "maxLength": 1800,
+      "minLength": 2
+    },
+    "scope": "project"
+  },
+  {
+    "id": "activity.leadership",
+    "category": "activities",
+    "text": "What decision or responsibility did you personally own?",
+    "why": "Leadership is an action, not just a club membership.",
+    "inputType": "textarea",
+    "required": false,
+    "priority": 67,
+    "destination": "activity.leadership",
+    "conditions": [
+      {
+        "questionId": "activity.summary",
+        "operator": "exists"
+      }
+    ],
+    "followUps": [],
+    "resumeSections": [
+      "activities"
+    ],
+    "careerDimensions": [
+      "evidence"
+    ],
+    "aiFollowUp": true,
+    "validation": {
+      "maxLength": 1800,
+      "minLength": 2
+    },
+    "scope": "activity"
+  },
+  {
+    "id": "activity.event",
+    "category": "activities",
+    "text": "Did you organize an event? What did you coordinate?",
+    "why": "Capture the purpose, logistics, and confirmed scope.",
+    "inputType": "textarea",
+    "required": false,
+    "priority": 57,
+    "destination": "activity.event",
+    "conditions": [
+      {
+        "questionId": "activity.summary",
+        "operator": "exists"
+      }
+    ],
+    "followUps": [],
+    "resumeSections": [
+      "activities"
+    ],
+    "careerDimensions": [
+      "evidence"
+    ],
+    "aiFollowUp": true,
+    "validation": {
+      "maxLength": 1800,
+      "minLength": 2
+    },
+    "scope": "activity"
+  },
+  {
+    "id": "activity.tutoring",
+    "category": "activities",
+    "text": "How did you help someone understand a difficult topic?",
+    "why": "Tutoring can demonstrate communication and subject knowledge.",
+    "inputType": "textarea",
+    "required": false,
+    "priority": 58,
+    "destination": "activity.tutoring",
+    "conditions": [
+      {
+        "questionId": "activity.summary",
+        "operator": "exists"
+      }
+    ],
+    "followUps": [],
+    "resumeSections": [
+      "activities"
+    ],
+    "careerDimensions": [
+      "evidence"
+    ],
+    "aiFollowUp": true,
+    "validation": {
+      "maxLength": 1800,
+      "minLength": 2
+    },
+    "scope": "activity"
+  },
+  {
+    "id": "activity.community",
+    "category": "activities",
+    "text": "Did you maintain content, a community, or a shared service?",
+    "why": "Record actual responsibilities and a confirmed audience size if known.",
+    "inputType": "textarea",
+    "required": false,
+    "priority": 56,
+    "destination": "activity.community",
+    "conditions": [
+      {
+        "questionId": "activity.summary",
+        "operator": "exists"
+      }
+    ],
+    "followUps": [],
+    "resumeSections": [
+      "activities"
+    ],
+    "careerDimensions": [
+      "evidence"
+    ],
+    "aiFollowUp": true,
+    "validation": {
+      "maxLength": 1800,
+      "minLength": 2
+    },
+    "scope": "activity"
+  },
+  {
+    "id": "activity.award",
+    "category": "activities",
+    "text": "Was your work recognized, published, or awarded?",
+    "why": "Record the issuer, date, title, and your contribution.",
+    "inputType": "textarea",
+    "required": false,
+    "priority": 49,
+    "destination": "activity.award",
+    "conditions": [
+      {
+        "questionId": "activity.summary",
+        "operator": "exists"
+      }
+    ],
+    "followUps": [],
+    "resumeSections": [
+      "activities"
+    ],
+    "careerDimensions": [
+      "evidence"
+    ],
+    "aiFollowUp": true,
+    "validation": {
+      "maxLength": 1800,
+      "minLength": 2
+    },
+    "scope": "activity"
+  },
+  {
+    "id": "education.additionalCoursework",
+    "category": "education",
+    "text": "Which relevant courses did you complete here?",
+    "why": "Keep current and completed classes distinguishable.",
+    "inputType": "textarea",
+    "required": false,
+    "priority": 65,
+    "destination": "education.additionalCoursework",
+    "conditions": [
+      {
+        "questionId": "education.summary",
+        "operator": "exists"
+      }
+    ],
+    "followUps": [],
+    "resumeSections": [
+      "education"
+    ],
+    "careerDimensions": [
+      "evidence"
+    ],
+    "aiFollowUp": true,
+    "validation": {
+      "maxLength": 1800,
+      "minLength": 2
+    },
+    "scope": "education"
+  },
+  {
+    "id": "education.additionalHonors",
+    "category": "education",
+    "text": "Which honors or scholarships did you receive here?",
+    "why": "Record the exact name and date.",
+    "inputType": "textarea",
+    "required": false,
+    "priority": 50,
+    "destination": "education.additionalHonors",
+    "conditions": [
+      {
+        "questionId": "education.summary",
+        "operator": "exists"
+      }
+    ],
+    "followUps": [],
+    "resumeSections": [
+      "education"
+    ],
+    "careerDimensions": [
+      "evidence"
+    ],
+    "aiFollowUp": true,
+    "validation": {
+      "maxLength": 1800,
+      "minLength": 2
+    },
+    "scope": "education"
+  }
+]

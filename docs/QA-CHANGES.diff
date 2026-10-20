@@ -1,0 +1,1681 @@
+--- before/components/folio/auth-form.tsx
++++ after/components/folio/auth-form.tsx
+@@ -1,35 +1,45 @@
+ "use client";
+-import { useEffect, useState, type FormEvent } from "react";
++import { useEffect, useState, useRef, type FormEvent } from "react";
++import { fetchJson } from "@/lib/client-request";
+ import { Orbit } from "lucide-react";
+ 
+ export function AuthForm({ signup = false }: { signup?: boolean }) {
+   const [error, setError] = useState("");
+   const [busy, setBusy] = useState(false);
++  const submitting = useRef(false);
+   useEffect(() => {
++    let active = true;
+     if (new URLSearchParams(window.location.search).get("error") === "google")
+-      setError("Google sign-in did not finish. Please try again or sign in with email.");
++      queueMicrotask(() => { if (active) setError("Google sign-in did not finish. Please try again or sign in with email."); });
++    const restored = () => { submitting.current = false; setBusy(false); };
++    window.addEventListener("pageshow", restored);
++    return () => { active = false; window.removeEventListener("pageshow", restored); };
+   }, []);
+   async function submit(event: FormEvent<HTMLFormElement>) {
+     event.preventDefault();
++    if (submitting.current) return;
++    submitting.current = true;
+     const data = new FormData(event.currentTarget);
+     setBusy(true); setError("");
+     try {
+-      const response = await fetch(`/api/auth/${signup ? "signup" : "signin"}`, {
++      await fetchJson(`/api/auth/${signup ? "signup" : "signin"}`, {
+         method: "POST", headers: { "Content-Type": "application/json" },
+-        body: JSON.stringify({ email: data.get("email"), password: data.get("password"), ...(signup ? { name: data.get("name") } : {}) }),
++        body: JSON.stringify({ email: String(data.get("email") ?? "").trim(), password: data.get("password"), ...(signup ? { name: String(data.get("name") ?? "").trim() } : {}) }),
+       });
+-      const result = await response.json() as { error?: string };
+-      if (!response.ok) throw Error(result.error ?? "Unable to sign in.");
+       // A document navigation discards all cached data from any previous account.
+-      window.location.assign("/dashboard");
+-    } catch (e) { setError(e instanceof Error ? e.message : "Please try again."); setBusy(false); }
++      window.location.assign("/dashboard?workspace=personal");
++    } catch (e) { setError(e instanceof Error ? e.message : "Please try again."); setBusy(false); submitting.current = false; }
+   }
+   return <main className="auth-page">
+     <div className="auth-card">
+       <a className="brand auth-brand" href="/"><Orbit size={28} /> folio<span className="brand-period">.</span></a>
+       <h1>{signup ? "Create your account" : "Welcome back"}</h1>
+       <p>{signup ? "Save your experience and build your next résumé." : "Sign in to continue your career workspace."}</p>
+-      <a className="auth-google" href="/api/auth/google" aria-disabled={busy}>
++      <a className="auth-google" href="/api/auth/google" aria-disabled={busy} onClick={(e) => {
++        if (submitting.current) { e.preventDefault(); return; }
++        if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
++        submitting.current = true; setBusy(true);
++      }}>
+         <span aria-hidden="true">G</span> Continue with Google
+       </a>
+       <div className="auth-divider"><span>or use email</span></div>
+--- before/components/folio/career.tsx
++++ after/components/folio/career.tsx
+@@ -1,8 +1,6 @@
+ "use client";
+ import { newId } from "@/lib/engine/id";
+-import Link from "next/link";
+ import { useState } from "react";
+-import { useRouter } from "next/navigation";
+ import {
+   ArrowLeft,
+   ArrowRight,
+@@ -24,6 +22,7 @@
+ import { Input } from "@/components/ui/input";
+ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+ import { toast } from "sonner";
++import { fetchJson } from "@/lib/client-request";
+ export function CareerExplorer({ id }: { id?: string }) {
+   const { w, mutate, busy } = useWorkspace();
+   const [query, setQuery] = useState("");
+@@ -32,7 +31,6 @@
+     occupation: unknown;
+   } | null>(null);
+   const [fetching, setFetching] = useState(false);
+-  const router = useRouter();
+   if (!w) return null;
+   const careers = matchCareers(w);
+   const career = id ? careers.find((c) => c.id === id) : null;
+@@ -40,9 +38,7 @@
+     if (!career) return;
+     setFetching(true);
+     try {
+-      const r = await fetch(`/api/occupation?code=${career.code}`);
+-      if (!r.ok) throw Error("Occupation unavailable");
+-      setSource(await r.json());
++      setSource(await fetchJson(`/api/occupation?code=${encodeURIComponent(career.code)}`));
+     } catch {
+       toast.error(
+         "Occupation information is unavailable. Try the source link.",
+@@ -60,11 +56,11 @@
+             title="A world of possible directions."
+             description="Explore how your interests and evidence connect to the work people actually do."
+             action={
+-              <Link className="subtle-button" href="/interview">
++              <a className="subtle-button" href="/interview">
+                 <Compass size={16} />
+                 Refine my direction
+                 <ArrowRight size={16} />
+-              </Link>
++              </a>
+             }
+           />
+           <Tabs defaultValue="map" className="career-tabs">
+@@ -120,7 +116,7 @@
+                   <Constellation
+                     interactive
+                     motion={w.profile.motion}
+-                    onSelect={(id) => router.push(`/career/${id}`)}
++                    onSelect={(id) => window.location.assign(`/career/${id}`)}
+                   />
+                   <span className="graph-instruction">
+                     Drag to explore · select a labeled path
+@@ -158,7 +154,7 @@
+                   .includes(query.toLowerCase()),
+               )
+               .map((c) => (
+-                <Link
++                <a
+                   href={`/career/${c.id}`}
+                   className="career-card"
+                   key={c.id}
+@@ -193,7 +189,7 @@
+                     connected
+                     <ArrowRight size={15} />
+                   </div>
+-                </Link>
++                </a>
+               ))}
+           </div>
+           <div className="method-note">
+@@ -211,14 +207,14 @@
+           title="Path not found"
+           description="Choose a field from the career explorer."
+           action="Explore careers"
+-          onClick={() => router.push("/career")}
++          onClick={() => window.location.assign("/career")}
+         />
+       ) : (
+         <>
+-          <Link className="back-link" href="/career">
++          <a className="back-link" href="/career">
+             <ArrowLeft size={15} />
+             All career paths
+-          </Link>
++          </a>
+           <PageHeading
+             eyebrow={`${career.cluster.toUpperCase()} · O*NET ${career.code}`}
+             title={career.title}
+--- before/components/folio/constellation.tsx
++++ after/components/folio/constellation.tsx
+@@ -1,5 +1,5 @@
+ "use client";
+-import { useEffect, useRef, useState } from "react";
++import { useEffect, useRef, useState, useId } from "react";
+ import { RotateCcw } from "lucide-react";
+ import { CAREERS } from "@/lib/providers/careers";
+ import type * as Three from "three";
+@@ -13,6 +13,7 @@
+   motion?: boolean;
+ }) {
+   const host = useRef<HTMLDivElement>(null);
++  const glowId = useId();
+   const [failed, setFailed] = useState(false);
+   const [reset, setReset] = useState(0);
+   const callback = useRef(onSelect);
+@@ -175,6 +176,7 @@
+         const pointer = new T.Vector2();
+         const resize = () => {
+           const { width, height } = container.getBoundingClientRect();
++          if (!width || !height) return;
+           renderer.setSize(width, height);
+           camera.aspect = width / height;
+           camera.updateProjectionMatrix();
+@@ -184,16 +186,20 @@
+         observer.observe(container);
+         resize();
+         const enter = (e: PointerEvent) => {
++          if (!interactive || e.button !== 0) return;
+           drag = true;
+           start = e.clientX;
+           moved = false;
++          container.setPointerCapture(e.pointerId);
+         };
+         const move = (e: PointerEvent) => {
+           const rect = container.getBoundingClientRect();
+           if (drag && interactive) {
+-            targetY += (e.clientX - start) * 0.008;
+-            start = e.clientX;
+-            moved = true;
++            if (moved || Math.abs(e.clientX - start) > 4) {
++              targetY += (e.clientX - start) * 0.008;
++              start = e.clientX;
++              moved = true;
++            }
+           } else if (motion && !reduce) {
+             targetY =
+               ((e.clientX - rect.left - rect.width / 2) / rect.width) * 0.25;
+@@ -202,8 +208,11 @@
+           }
+         };
+         const up = (e: PointerEvent) => {
++          const wasDragging = drag;
++          const wasMoved = moved;
+           drag = false;
+-          if (!interactive || moved) return;
++          if (container.hasPointerCapture(e.pointerId)) container.releasePointerCapture(e.pointerId);
++          if (!interactive || !wasDragging || wasMoved) return;
+           const rect = container.getBoundingClientRect();
+           pointer.set(
+             ((e.clientX - rect.left) / rect.width) * 2 - 1,
+@@ -231,6 +240,9 @@
+         container.addEventListener("pointerdown", enter);
+         container.addEventListener("pointermove", move);
+         container.addEventListener("pointerup", up);
++        const cancel = () => { drag = false; moved = false; };
++        container.addEventListener("pointercancel", cancel);
++        container.addEventListener("lostpointercapture", cancel);
+         const lost = (e: Event) => {
+           e.preventDefault();
+           setFailed(true);
+@@ -243,6 +255,9 @@
+           container.removeEventListener("pointerdown", enter);
+           container.removeEventListener("pointermove", move);
+           container.removeEventListener("pointerup", up);
++          container.removeEventListener("pointercancel", cancel);
++          container.removeEventListener("lostpointercapture", cancel);
++          renderer.domElement.removeEventListener("webglcontextlost", lost);
+           scene.traverse((obj) => {
+             const m = obj as Three.Mesh;
+             if (m.geometry) m.geometry.dispose();
+@@ -257,7 +272,7 @@
+           renderer.domElement.remove();
+         };
+       })
+-      .catch(() => setFailed(true));
++      .catch(() => { if (!disposed) setFailed(true); });
+     return () => {
+       disposed = true;
+       clean();
+@@ -273,12 +288,12 @@
+           aria-hidden="true"
+         >
+           <defs>
+-            <radialGradient id="node-glow">
++            <radialGradient id={glowId}>
+               <stop stopColor="#a8edc8" stopOpacity=".18" />
+               <stop offset="1" stopColor="#a8edc8" stopOpacity="0" />
+             </radialGradient>
+           </defs>
+-          <circle cx="200" cy="170" r="155" fill="url(#node-glow)" />
++          <circle cx="200" cy="170" r="155" fill={`url(#${glowId})`} />
+           <g stroke="#80bfa9" fill="none" strokeWidth=".8">
+             <ellipse
+               cx="200"
+@@ -356,6 +371,8 @@
+           className="graph-reset"
+           onClick={() => setReset((x) => x + 1)}
+           aria-label="Reset graph rotation"
++          disabled={failed}
++          title={failed ? "Rotation is unavailable in the static graph. Career labels still work." : "Reset graph rotation"}
+         >
+           <RotateCcw size={15} />
+         </button>
+--- before/components/folio/dashboard.tsx
++++ after/components/folio/dashboard.tsx
+@@ -1,6 +1,4 @@
+ "use client";
+-import Link from "next/link";
+-import { useRouter } from "next/navigation";
+ import {
+   ArrowRight,
+   ArrowUpRight,
+@@ -24,7 +22,6 @@
+ import { Progress } from "@/components/ui/progress";
+ export function Dashboard() {
+   const { w } = useWorkspace();
+-  const router = useRouter();
+   if (!w) return null;
+   const c = completeness(w),
+     skills = skillEvidence(w).filter((s) => s.facts.length),
+@@ -38,11 +35,11 @@
+         title={`${w.mode === "demo" ? "Maya" : w.profile.name.split(" ")[0] || "Your story"}, meet your next chapter.`}
+         description="Connect what you’ve done with what you could do next."
+         action={
+-          <Link className="subtle-button" href="/profile">
++          <a className="subtle-button" href="/profile">
+             <Target size={16} />
+             View your profile
+             <ArrowUpRight size={15} />
+-          </Link>
++          </a>
+         }
+       />
+       <div className="overview-top">
+@@ -59,7 +56,7 @@
+               Your projects, part-time jobs, and small wins are pieces of a
+               bigger story.
+             </p>
+-            <Primary onClick={() => router.push("/interview")}>
++            <Primary onClick={() => window.location.assign("/interview")}>
+               Continue your interview
+               <ArrowRight size={17} />
+             </Primary>
+@@ -71,7 +68,7 @@
+           <div className="feature-graph">
+             <Constellation
+               motion={w.profile.motion}
+-              onSelect={(id) => router.push(`/career/${id}`)}
++              onSelect={(id) => window.location.assign(`/career/${id}`)}
+             />
+           </div>
+           <div className="feature-bottom">
+@@ -98,10 +95,10 @@
+               ? "You’ve described what you did. Adding an outcome will help someone understand why it mattered."
+               : "A class project, part-time job, or helping a friend can be a useful place to begin."}
+           </p>
+-          <Link className="next-step-link" href="/interview">
++          <a className="next-step-link" href="/interview">
+             {c.enough ? "Add the missing piece" : "Begin your interview"}
+             <ArrowUpRight size={18} />
+-          </Link>
++          </a>
+           <div className="time-note">One focused question at a time</div>
+         </Panel>
+       </div>
+@@ -183,7 +180,7 @@
+           </PanelTitle>
+           <div className="insight-list">
+             {health.findings.slice(0, 3).map((f, i) => (
+-              <Link href={`/${f.action}`} key={f.title}>
++              <a href={`/${f.action}`} key={f.title}>
+                 <span
+                   className={`insight-icon ${f.kind === "good" ? "good" : ""}`}
+                 >
+@@ -198,7 +195,7 @@
+                   <p>{f.detail}</p>
+                 </div>
+                 <ChevronRight size={16} />
+-              </Link>
++              </a>
+             ))}
+           </div>
+           <div className="panel-footnote">
+@@ -214,7 +211,7 @@
+           </PanelTitle>
+           <div className="career-mini-grid">
+             {careers.slice(0, 3).map((c, i) => (
+-              <Link href={`/career/${c.id}`} className="career-mini" key={c.id}>
++              <a href={`/career/${c.id}`} className="career-mini" key={c.id}>
+                 <div className="career-mini-icon" style={{ color: c.color }}>
+                   {i === 0 ? (
+                     <GitBranch size={25} />
+@@ -234,7 +231,7 @@
+                 <span className="mini-arrow">
+                   <ArrowUpRight size={17} />
+                 </span>
+-              </Link>
++              </a>
+             ))}
+           </div>
+         </Panel>
+@@ -244,7 +241,7 @@
+           </PanelTitle>
+           <div className="job-mini-list">
+             {jobs.map((j) => (
+-              <Link href={`/jobs/${j.id}`} key={j.id}>
++              <a href={`/jobs/${j.id}`} key={j.id}>
+                 <div
+                   className="company-symbol"
+                   style={{ color: j.color, background: `${j.color}12` }}
+@@ -262,7 +259,7 @@
+                   </small>
+                 </div>
+                 <ArrowUpRight size={15} />
+-              </Link>
++              </a>
+             ))}
+           </div>
+         </Panel>
+@@ -276,10 +273,10 @@
+             all starts somewhere.
+           </p>
+         </div>
+-        <Link href="/discover">
++        <a href="/discover">
+           Find a hidden strength
+           <ArrowRight size={17} />
+-        </Link>
++        </a>
+       </div>
+     </>
+   );
+--- before/components/folio/discover.tsx
++++ after/components/folio/discover.tsx
+@@ -1,8 +1,6 @@
+ "use client";
+ import { newId } from "@/lib/engine/id";
+-import Link from "next/link";
+ import { useState } from "react";
+-import { useRouter } from "next/navigation";
+ import {
+   Wrench,
+   GraduationCap,
+@@ -117,7 +115,6 @@
+ ];
+ export function Discover() {
+   const { w, mutate, busy } = useWorkspace();
+-  const router = useRouter();
+   const [selected, setSelected] = useState<number | null>(null);
+   const [title, setTitle] = useState("");
+   const [story, setStory] = useState("");
+@@ -128,25 +125,19 @@
+     const id = newId();
+     try {
+       await mutate({
+-        type: "entity",
++        type: "capture",
+         entity: {
+           id,
+           kind: item.kind as EntityKind,
+-          title: title || item.title,
++          title: title.trim() || item.title,
+           subtitle: "Discovered experience",
+           dates: "",
+         },
+-      });
+-      await mutate({
+-        type: "answer",
+-        entityId: id,
+-        questionId: `${item.kind}.summary`,
+-        value: story,
+-        confirmed: true,
++        text: story,
+       });
+       toast.success("A new piece of your story, captured.");
+       setSelected(null);
+-      router.push(`/interview?entity=${encodeURIComponent(id)}`);
++      window.location.assign(`/interview?entity=${encodeURIComponent(id)}`);
+     } catch {}
+   }
+   return (
+@@ -200,10 +191,10 @@
+             your first evidence.
+           </p>
+         </div>
+-        <Link className="text-link" href="/career">
++        <a className="text-link" href="/career">
+           Find a project
+           <ArrowRight size={16} />
+-        </Link>
++        </a>
+       </div>
+       <Dialog
+         open={item !== null}
+--- before/components/folio/entity-editor.tsx
++++ after/components/folio/entity-editor.tsx
+@@ -34,11 +34,12 @@
+   const [type, setType] = useState<EntityKind>(entity?.kind ?? kind);
+   async function save(e: React.FormEvent) {
+     e.preventDefault();
++    if (busy) return;
+     const id = entity?.id ?? newId();
+     try {
+       await mutate({
+         type: "entity",
+-        entity: { id, title, subtitle, dates, kind: type },
++        entity: { id, title: title.trim(), subtitle, dates, kind: type },
+       });
+       toast.success(entity ? "Experience updated" : "Experience added");
+       onClose();
+--- before/components/folio/interview.tsx
++++ after/components/folio/interview.tsx
+@@ -1,7 +1,6 @@
+ "use client";
+-import Link from "next/link";
+ import { useSearchParams } from "next/navigation";
+-import { useState } from "react";
++import { useState, useRef } from "react";
+ import {
+   ArrowRight,
+   Plus,
+@@ -32,6 +31,7 @@
+ import { Progress } from "@/components/ui/progress";
+ import { toast } from "sonner";
+ import type { Suggestions } from "@/lib/providers/ai";
++import { fetchJson } from "@/lib/client-request";
+ export function AnswerForm({
+   q,
+   entityId,
+@@ -218,6 +218,7 @@
+     suggestions: Suggestions;
+   } | null>(null);
+   const [aiBusy, setAiBusy] = useState(false);
++  const suggestionRequest = useRef(0);
+   if (!w) return null;
+   const requested = search.get("entity");
+   const selected =
+@@ -244,26 +245,21 @@
+   const c = completeness(w);
+   const remaining = queue.filter((q) => q.priority >= 80).length;
+   async function suggest() {
++    const request = ++suggestionRequest.current;
+     setAiBusy(true);
+     try {
+-      const response = await fetch("/api/ai", {
++      const data = await fetchJson<{ provider: string; suggestions: Suggestions }>("/api/ai", {
+         method: "POST",
+         headers: { "Content-Type": "application/json" },
+         body: JSON.stringify({ mode, entityId: selected }),
+-      });
+-      const data = (await response.json()) as {
+-        provider: string;
+-        suggestions: Suggestions;
+-        error?: string;
+-      };
+-      if (!response.ok) throw Error(data.error);
+-      setSuggestions(data);
++      }, 35000);
++      if (request === suggestionRequest.current) setSuggestions(data);
+     } catch (e) {
+-      toast.error(
++      if (request === suggestionRequest.current) toast.error(
+         e instanceof Error ? e.message : "Unable to suggest questions.",
+       );
+     } finally {
+-      setAiBusy(false);
++      if (request === suggestionRequest.current) setAiBusy(false);
+     }
+   }
+   return (
+@@ -273,11 +269,11 @@
+         title="Let’s connect the dots."
+         description="A thoughtful conversation. A stronger story. One question at a time."
+         action={
+-          <Link className="subtle-button" href="/resume">
++          <a className="subtle-button" href="/resume">
+             <FileText size={16} />
+             Build a draft
+             <ArrowUpRightIcon />
+-          </Link>
++          </a>
+         }
+       />
+       <div className="interview-layout">
+@@ -288,6 +284,9 @@
+             onClick={() => {
+               setEntityId("profile");
+               setEdit(null);
++              setSuggestions(null);
++              suggestionRequest.current += 1;
++              setAiBusy(false);
+             }}
+           >
+             <span className="outline-number">01</span>
+@@ -304,6 +303,8 @@
+                 setEntityId(x.id);
+                 setEdit(null);
+                 setSuggestions(null);
++                suggestionRequest.current += 1;
++                setAiBusy(false);
+               }}
+             >
+               <span className="outline-number">
+@@ -330,10 +331,10 @@
+             <p>
+               No formal experience? A class project or helping someone counts.
+             </p>
+-            <Link href="/discover">
++            <a href="/discover">
+               Find a starting point
+               <ArrowRight size={14} />
+-            </Link>
++            </a>
+           </div>
+         </aside>
+         <div className="interview-main">
+@@ -380,7 +381,7 @@
+                 q={q}
+                 entityId={selected}
+                 fact={editing}
+-                onSaved={() => setEdit(null)}
++                onSaved={() => { setEdit(null); setSuggestions(null); }}
+               />
+             ) : (
+               <Empty
+--- before/components/folio/jobs.tsx
++++ after/components/folio/jobs.tsx
+@@ -1,7 +1,5 @@
+ "use client";
+-import Link from "next/link";
+ import { useState } from "react";
+-import { useRouter } from "next/navigation";
+ import {
+   Search,
+   Bookmark,
+@@ -35,7 +33,6 @@
+ import { toast } from "sonner";
+ export function Jobs({ id }: { id?: string }) {
+   const { w, mutate, busy } = useWorkspace();
+-  const router = useRouter();
+   const [query, setQuery] = useState("");
+   const [mode, setMode] = useState("Any");
+   const [savedOnly, setSavedOnly] = useState(false);
+@@ -66,7 +63,7 @@
+       toast.success(
+         "Created a tailored draft. Review and approve its evidence.",
+       );
+-      router.push(`/resume/${next.resumes[0].id}`);
++      window.location.assign(`/resume/${next.resumes[0].id}`);
+     } catch {}
+   }
+   const match = job ? analyzeJob(job.description, w) : result;
+@@ -172,9 +169,9 @@
+                         )}
+                       </button>
+                     </div>
+-                    <Link href={`/jobs/${j.id}`}>
++                    <a href={`/jobs/${j.id}`}>
+                       <h2>{j.title}</h2>
+-                    </Link>
++                    </a>
+                     <div className="job-location">
+                       <MapPin size={14} />
+                       {j.location}
+@@ -222,10 +219,10 @@
+                         ))}
+                       </ul>
+                     </details>
+-                    <Link className="job-card-link" href={`/jobs/${j.id}`}>
++                    <a className="job-card-link" href={`/jobs/${j.id}`}>
+                       See the fit
+                       <ArrowUpRight size={16} />
+-                    </Link>
++                    </a>
+                   </Panel>
+                 ))}
+               </div>
+@@ -328,14 +325,14 @@
+           title="Opportunity not found"
+           description="Explore the example opportunities or analyze your own job description."
+           action="Back to opportunities"
+-          onClick={() => router.push("/jobs")}
++          onClick={() => window.location.assign("/jobs")}
+         />
+       ) : (
+         <>
+-          <Link className="back-link" href="/jobs">
++          <a className="back-link" href="/jobs">
+             <ArrowLeft size={15} />
+             All opportunities
+-          </Link>
++          </a>
+           <PageHeading
+             eyebrow={`${job.company.toUpperCase()} · FICTIONAL EXAMPLE`}
+             title={job.title}
+--- before/components/folio/onboarding.tsx
++++ after/components/folio/onboarding.tsx
+@@ -1,12 +1,10 @@
+ "use client";
+-import { useRouter } from "next/navigation";
+ import { useWorkspace } from "./workspace";
+ import { PageHeading, Panel, Tag } from "./shared";
+ import { ProfileForm } from "./profile";
+ import { ShieldCheck } from "lucide-react";
+ export function Onboarding() {
+   const { w, mutate, mode } = useWorkspace();
+-  const router = useRouter();
+   if (!w) return null;
+   return (
+     <>
+@@ -30,7 +28,7 @@
+             onboarding
+             onSave={async (p) => {
+               await mutate({ type: "profile", profile: p });
+-              router.push("/interview");
++              window.location.assign("/interview");
+             }}
+           />
+         </Panel>
+--- before/components/folio/profile.tsx
++++ after/components/folio/profile.tsx
+@@ -1,5 +1,4 @@
+ "use client";
+-import Link from "next/link";
+ import { useState } from "react";
+ import { useForm, useWatch } from "react-hook-form";
+ import { zodResolver } from "@hookform/resolvers/zod";
+@@ -76,6 +75,7 @@
+     defaultValues: initial,
+   });
+   const target = useWatch({ control, name: "target" });
++  const [saveError, setSaveError] = useState("");
+   const year = useWatch({ control, name: "year" });
+   const fields: {
+     key: keyof Profile;
+@@ -145,7 +145,16 @@
+       },
+     );
+   return (
+-    <form onSubmit={handleSubmit(onSave)} className="form-stack">
++    <form onSubmit={handleSubmit(async (p) => {
++      setSaveError("");
++      const profile = { ...p, name: p.name.trim(), email: p.email.trim(), school: p.school.trim(), degree: p.degree.trim() };
++      if (!profile.name || !profile.email || !profile.school || !profile.degree) {
++        setSaveError("Enter your name, email, school, and degree. Spaces alone are not enough.");
++        return;
++      }
++      try { await onSave(profile); }
++      catch (error) { setSaveError(error instanceof Error ? error.message : "Unable to save your profile."); }
++    })} className="form-stack">
+       <div className="form-grid">
+         {fields.map((f) => (
+           <div key={f.key}>
+@@ -156,7 +165,7 @@
+               placeholder={f.placeholder}
+               type={f.type ?? "text"}
+               required={f.required}
+-              maxLength={250}
++              maxLength={f.key === "email" ? 254 : 250}
+             />
+             {errors[f.key] && (
+               <p className="form-error">{errors[f.key]?.message}</p>
+@@ -203,6 +212,7 @@
+           background information is needed.
+         </p>
+       </div>
++      {saveError && <p className="form-error" role="alert">{saveError}</p>}
+       <Primary type="submit" disabled={isSubmitting}>
+         {isSubmitting
+           ? "Saving..."
+@@ -412,8 +422,9 @@
+                           {!f.confirmed && (
+                             <button
+                               className="text-link"
++                              disabled={busy}
+                               onClick={() =>
+-                                void mutate({
++                                void mutate(f.questionId === "import.resume" ? { type: "confirmImport", id: f.id } : {
+                                   type: "answer",
+                                   entityId: e.id,
+                                   questionId: `${e.kind}.action`,
+@@ -462,13 +473,13 @@
+                     details.
+                   </p>
+                 )}
+-                <Link
++                <a
+                   className="text-link experience-followup"
+-                  href="/interview"
++                  href={`/interview?entity=${encodeURIComponent(e.id)}`}
+                 >
+                   Develop this experience
+                   <ArrowRight size={15} />
+-                </Link>
++                </a>
+               </Panel>
+             ))
+           )}
+@@ -566,7 +577,7 @@
+           )}
+         </DialogContent>
+       </Dialog>
+-      <AlertDialog open={!!remove} onOpenChange={(v) => !v && setRemove(null)}>
++      <AlertDialog open={!!remove} onOpenChange={(v) => !v && !busy && setRemove(null)}>
+         <AlertDialogContent>
+           <AlertDialogHeader>
+             <AlertDialogTitle>
+@@ -579,15 +590,14 @@
+             </AlertDialogDescription>
+           </AlertDialogHeader>
+           <AlertDialogFooter>
+-            <AlertDialogCancel>Keep it</AlertDialogCancel>
++            <AlertDialogCancel disabled={busy}>Keep it</AlertDialogCancel>
+             <AlertDialogAction
+               disabled={busy}
+-              onClick={() =>
+-                remove &&
+-                void mutate({ type: remove.kind, id: remove.id })
+-                  .then(() => setRemove(null))
+-                  .catch(() => {})
+-              }
++              onClick={(event) => {
++                event.preventDefault();
++                if (remove) void mutate({ type: remove.kind, id: remove.id })
++                  .then(() => setRemove(null)).catch(() => {});
++              }}
+             >
+               Remove
+             </AlertDialogAction>
+@@ -621,7 +631,8 @@
+                   toast.error("Choose a text file under 50 KB.");
+                   return;
+                 }
+-                setImportText((await file.text()).slice(0, 1800));
++                try { setImportText((await file.text()).slice(0, 1800)); }
++                catch { toast.error("That file could not be read. Try another TXT file or paste the text."); }
+               }
+             }}
+           />
+@@ -633,7 +644,7 @@
+             placeholder="Paste one relevant contribution (up to 1,800 characters)."
+           />
+           <Primary
+-            disabled={!w.entities.length || !importText || busy}
++            disabled={!w.entities.length || importText.trim().length < 2 || busy}
+             onClick={() => void importFact()}
+           >
+             Import for review
+--- before/components/folio/resume.tsx
++++ after/components/folio/resume.tsx
+@@ -1,7 +1,5 @@
+ "use client";
+-import Link from "next/link";
+ import { useState } from "react";
+-import { useRouter } from "next/navigation";
+ import {
+   Plus,
+   Download,
+@@ -151,7 +149,6 @@
+ }
+ export function ResumeStudio({ id }: { id?: string }) {
+   const { w, mutate, busy } = useWorkspace();
+-  const router = useRouter();
+   const [create, setCreate] = useState(false);
+   const [name, setName] = useState("");
+   const [template, setTemplate] = useState<Template>("technical");
+@@ -171,12 +168,12 @@
+     try {
+       const next = await mutate({
+         type: "generate",
+-        name: name || `${w!.profile.target || "My"} résumé`,
++        name: (name.trim() || `${w!.profile.target || "My"} résumé`).slice(0, 120),
+         target: w!.profile.target,
+         template,
+       });
+       setCreate(false);
+-      router.push(`/resume/${next.resumes[0].id}`);
++      window.location.assign(`/resume/${next.resumes[0].id}`);
+       toast.success("Draft created from your confirmed facts.");
+     } catch {}
+   }
+@@ -207,7 +204,9 @@
+       const a = document.createElement("a");
+       a.href = url;
+       a.download = `${r.profileSnapshot.name.replace(/[^a-z0-9]/gi, "-") || "resume"}-${r.template}.pdf`;
++      document.body.appendChild(a);
+       a.click();
++      a.remove();
+       setTimeout(() => URL.revokeObjectURL(url), 30000);
+       toast.success(
+         `PDF downloaded · ${result.pages} page${result.pages === 1 ? "" : "s"}`,
+@@ -274,7 +273,7 @@
+           {w.resumes.length ? (
+             <div className="resume-grid">
+               {w.resumes.map((r) => (
+-                <Link
++                <a
+                   className="resume-card"
+                   key={r.id}
+                   href={`/resume/${r.id}`}
+@@ -298,7 +297,7 @@
+                     </p>
+                     <ArrowRight size={19} />
+                   </div>
+-                </Link>
++                </a>
+               ))}
+               <button
+                 className="new-resume-card"
+@@ -336,14 +335,14 @@
+           title="This résumé isn’t here."
+           description="It may have been deleted, or you may be viewing a different workspace."
+           action="Back to studio"
+-          onClick={() => router.push("/resume")}
++          onClick={() => window.location.assign("/resume")}
+         />
+       ) : (
+         <>
+-          <Link className="back-link" href="/resume">
++          <a className="back-link" href="/resume">
+             <ArrowLeft size={15} />
+             All résumé versions
+-          </Link>
++          </a>
+           <PageHeading
+             eyebrow={`RÉSUMÉ STUDIO · REVISION ${r.revision}`}
+             title={r.name}
+@@ -371,6 +370,7 @@
+             <div className="button-row">
+               <Pick
+                 label="Résumé template"
++                disabled={busy}
+                 value={r.template}
+                 onChange={(v) =>
+                   void save({
+@@ -403,7 +403,7 @@
+               <button
+                 className="subtle-button"
+                 onClick={() => {
+-                  setName(`${r.name} · refreshed`);
++                  setName(`${r.name} · refreshed`.slice(0, 120));
+                   setTemplate(r.template);
+                   setCreate(true);
+                 }}
+@@ -711,6 +711,7 @@
+             <Button
+               variant="ghost"
+               className="danger-text"
++              disabled={busy}
+               onClick={() =>
+                 void save({
+                   ...r,
+@@ -807,7 +808,7 @@
+             disabled={!newName.trim() || busy}
+             onClick={() =>
+               r &&
+-              void save({ ...r, name: newName }).then(
++              void save({ ...r, name: newName.trim() }).then(
+                 (ok) => ok && setRename(false),
+               )
+             }
+@@ -816,7 +817,7 @@
+           </Primary>
+         </DialogContent>
+       </Dialog>
+-      <AlertDialog open={remove} onOpenChange={setRemove}>
++      <AlertDialog open={remove} onOpenChange={(v) => { if (!busy) setRemove(v); }}>
+         <AlertDialogContent>
+           <AlertDialogHeader>
+             <AlertDialogTitle>Delete this résumé version?</AlertDialogTitle>
+@@ -826,14 +827,14 @@
+             </AlertDialogDescription>
+           </AlertDialogHeader>
+           <AlertDialogFooter>
+-            <AlertDialogCancel>Keep version</AlertDialogCancel>
++            <AlertDialogCancel disabled={busy}>Keep version</AlertDialogCancel>
+             <AlertDialogAction
+-              onClick={() =>
+-                r &&
+-                void mutate({ type: "deleteResume", id: r.id })
+-                  .then(() => router.push("/resume"))
+-                  .catch(() => {})
+-              }
++              disabled={busy}
++              onClick={(event) => {
++                event.preventDefault();
++                if (r) void mutate({ type: "deleteResume", id: r.id })
++                  .then(() => window.location.assign("/resume")).catch(() => {});
++              }}
+             >
+               Delete version
+             </AlertDialogAction>
+--- before/components/folio/settings.tsx
++++ after/components/folio/settings.tsx
+@@ -1,6 +1,6 @@
+ "use client";
+ import { SignoutButton } from "./signout-button";
+-import { useState } from "react";
++import { useState, useRef } from "react";
+ import {
+   Download,
+   ShieldCheck,
+@@ -9,7 +9,6 @@
+   Orbit,
+   Trash2,
+   RotateCcw,
+-  LogOut,
+   ExternalLink,
+ } from "lucide-react";
+ import { useWorkspace } from "./workspace";
+@@ -28,11 +27,13 @@
+   AlertDialogAction,
+ } from "@/components/ui/alert-dialog";
+ import { toast } from "sonner";
++import { fetchJson } from "@/lib/client-request";
+ export function Settings() {
+-  const { w, mutate, busy, refresh, setMode } = useWorkspace();
++  const { w, mutate, busy, setMode } = useWorkspace();
+   const [remove, setRemove] = useState<"profile" | "account" | null>(null);
+   const [confirm, setConfirm] = useState("");
+   const [deleting, setDeleting] = useState(false);
++  const deletion = useRef(false);
+   if (!w) return null;
+   function exportData() {
+     const blob = new Blob([JSON.stringify(w, null, 2)], {
+@@ -42,28 +43,30 @@
+     const a = document.createElement("a");
+     a.href = url;
+     a.download = "folio-profile-export.json";
++    document.body.appendChild(a);
+     a.click();
+-    setTimeout(() => URL.revokeObjectURL(url), 2000);
++    a.remove();
++    setTimeout(() => URL.revokeObjectURL(url), 30000);
+     toast.success("Your profile data has been downloaded.");
+   }
+   async function deleteData() {
++    if (deletion.current || busy || confirm !== "DELETE") return;
++    deletion.current = true;
+     try {
+       setDeleting(true);
+       if (remove === "account") {
+-        const r = await fetch("/api/workspace", {
++        await fetchJson("/api/workspace", {
+           method: "DELETE",
+           headers: { "Content-Type": "application/json" },
+           body: JSON.stringify({ confirm }),
+         });
+-        if (!r.ok)
+-          throw Error("Your data could not be deleted. Please try again.");
+         setMode("personal");
+-        refresh();
++        // Discard both account workspace caches after deleting both workspaces.
++        window.location.assign("/profile?workspace=personal");
++        return;
+       } else await mutate({ type: "reset" });
+       toast.success(
+-        remove === "account"
+-          ? "All Folio account data deleted"
+-          : w!.mode === "demo"
++        w!.mode === "demo"
+             ? "Demo restored"
+             : "Profile cleared",
+       );
+@@ -73,6 +76,7 @@
+       toast.error(e instanceof Error ? e.message : "Deletion failed.");
+     } finally {
+       setDeleting(false);
++      deletion.current = false;
+     }
+   }
+   return (
+@@ -261,7 +265,7 @@
+       </div>
+       <AlertDialog
+         open={remove !== null}
+-        onOpenChange={(v) => !v && setRemove(null)}
++        onOpenChange={(v) => !v && !deleting && !busy && setRemove(null)}
+       >
+         <AlertDialogContent>
+           <AlertDialogHeader>
+@@ -288,9 +292,9 @@
+             autoComplete="off"
+           />
+           <AlertDialogFooter>
+-            <AlertDialogCancel>Keep my data</AlertDialogCancel>
++            <AlertDialogCancel disabled={deleting || busy}>Keep my data</AlertDialogCancel>
+             <AlertDialogAction
+-              disabled={confirm !== "DELETE" || deleting}
++              disabled={confirm !== "DELETE" || deleting || busy}
+               onClick={(e) => {
+                 e.preventDefault();
+                 void deleteData();
+--- before/components/folio/shared.tsx
++++ after/components/folio/shared.tsx
+@@ -68,14 +68,16 @@
+   onChange,
+   options,
+   label,
++  disabled = false,
+ }: {
+   value: string;
+   onChange: (v: string) => void;
+   options: (string | { value: string; label: string })[];
+   label: string;
++  disabled?: boolean;
+ }) {
+   return (
+-    <Select value={value} onValueChange={onChange}>
++    <Select value={value} onValueChange={onChange} disabled={disabled}>
+       <SelectTrigger className="pick" aria-label={label}>
+         <SelectValue placeholder={label} />
+       </SelectTrigger>
+--- before/components/folio/shell.tsx
++++ after/components/folio/shell.tsx
+@@ -1,5 +1,5 @@
+ "use client";
+-import { useEffect, useState, type ReactNode } from "react";
++import { Fragment, useEffect, useState, type ReactNode } from "react";
+ import { usePathname } from "next/navigation";
+ import {
+   Orbit,
+@@ -171,6 +171,7 @@
+             <button
+               aria-label="Switch profile"
+               className="icon-button"
++              disabled={busy}
+               onClick={() => setMode(mode === "demo" ? "personal" : "demo")}
+             >
+               <ArrowRight size={17} />
+@@ -230,6 +231,7 @@
+             </span>
+           </div>
+           <button
++            disabled={busy}
+             onClick={() => {
+               setMode(mode === "demo" ? "personal" : "demo");
+               if (mode === "demo") window.location.assign("/onboarding");
+@@ -265,7 +267,7 @@
+               </div>
+             </div>
+           ) : (
+-            children
++            <Fragment key={mode}>{children}</Fragment>
+           )}
+         </main>
+         <footer className="app-footer">
+--- before/components/folio/signout-button.tsx
++++ after/components/folio/signout-button.tsx
+@@ -1,16 +1,19 @@
+ "use client";
+-import { useState } from "react";
++import { useState, useRef } from "react";
++import { fetchJson } from "@/lib/client-request";
+ import { LogOut } from "lucide-react";
+ export function SignoutButton() {
+   const [busy, setBusy] = useState(false);
+   const [error, setError] = useState("");
++  const submitting = useRef(false);
+   async function signout() {
++    if (submitting.current) return;
++    submitting.current = true;
+     setBusy(true); setError("");
+     try {
+-      const response = await fetch("/api/auth/signout", { method: "POST" });
+-      if (!response.ok) throw Error("Unable to sign out. Please try again.");
++      await fetchJson("/api/auth/signout", { method: "POST" }, 35000);
+       window.location.assign("/signin");
+-    } catch (e) { setError(e instanceof Error ? e.message : "Unable to sign out."); setBusy(false); }
++    } catch (e) { setError(e instanceof Error ? e.message : "Unable to sign out."); setBusy(false); submitting.current = false; }
+   }
+   return <><button className="subtle-button signout" onClick={signout} disabled={busy}><LogOut size={16} />{busy ? "Signing out…" : "Sign out"}</button>{error && <p role="alert">{error}</p>}</>;
+ }
+--- before/components/folio/welcome.tsx
++++ after/components/folio/welcome.tsx
+@@ -1,5 +1,4 @@
+ "use client";
+-import Link from "next/link";
+ import {
+   ArrowRight,
+   MessagesSquare,
+@@ -11,10 +10,8 @@
+ import { Constellation } from "./constellation";
+ import { useWorkspace } from "./workspace";
+ import { Tag, Primary, Panel } from "./shared";
+-import { useRouter } from "next/navigation";
+ export function Welcome() {
+   const { w, setMode } = useWorkspace();
+-  const router = useRouter();
+   return (
+     <>
+       <section className="welcome-hero">
+@@ -33,25 +30,25 @@
+             <Primary
+               onClick={() => {
+                 setMode("personal");
+-                router.push("/onboarding");
++                window.location.assign("/onboarding");
+               }}
+             >
+               Find my starting point
+               <ArrowRight size={17} />
+             </Primary>
+-            <Link
++            <a
+               className="subtle-button"
+               href="/dashboard"
+               onClick={() => setMode("demo")}
+             >
+               Explore Maya’s demo
+-            </Link>
++            </a>
+           </div>
+         </div>
+         <div>
+           <Constellation
+             motion={w?.profile.motion ?? true}
+-            onSelect={(id) => router.push(`/career/${id}`)}
++            onSelect={(id) => window.location.assign(`/career/${id}`)}
+           />
+         </div>
+       </section>
+--- before/components/folio/workspace.tsx
++++ after/components/folio/workspace.tsx
+@@ -3,6 +3,8 @@
+   createContext,
+   useContext,
+   useState,
++  useRef,
++  useEffect,
+   useSyncExternalStore,
+   type ReactNode,
+ } from "react";
+@@ -16,6 +18,7 @@
+ import { toast } from "sonner";
+ import type { Workspace } from "@/lib/engine/model";
+ import type { Action } from "@/lib/validation";
++import { fetchJson } from "@/lib/client-request";
+ type Mode = "demo" | "personal";
+ interface Context {
+   w: Workspace | undefined;
+@@ -36,13 +39,15 @@
+     window.removeEventListener("storage", cb);
+   };
+ }
++let memoryMode: Mode = "personal";
+ function storedMode(): Mode {
+-  return localStorage.getItem("folio-mode") === "personal"
+-    ? "personal"
+-    : "demo";
++  if (new URLSearchParams(window.location.search).get("workspace") === "personal") return "personal";
++  try { return localStorage.getItem("folio-mode") === "demo" ? "demo" : "personal"; }
++  catch { return memoryMode; }
+ }
+ function setStoredMode(m: Mode) {
+-  localStorage.setItem("folio-mode", m);
++  memoryMode = m;
++  try { localStorage.setItem("folio-mode", m); } catch { /* In-memory mode still works when storage is blocked. */ }
+   window.dispatchEvent(new Event("folio-mode"));
+ }
+ export function useWorkspace() {
+@@ -50,20 +55,30 @@
+   if (!c) throw Error("Workspace provider required");
+   return c;
+ }
+-async function fetchJson<T>(url: string, options?: RequestInit): Promise<T> {
+-  const response = await fetch(url, options);
+-  const data = (await response.json()) as T & { error?: string };
+-  if (!response.ok)
+-    throw Error(data.error ?? "Something went wrong. Please try again.");
+-  return data;
+-}
+ function DataProvider({ children }: { children: ReactNode }) {
++  const saving = useRef(false);
++  useEffect(() => {
++    const restored = (event: PageTransitionEvent) => {
++      if (event.persisted) window.location.reload();
++    };
++    window.addEventListener("pageshow", restored);
++    if (new URLSearchParams(window.location.search).get("workspace") === "personal") {
++      setStoredMode("personal");
++      const url = new URL(window.location.href);
++      url.searchParams.delete("workspace");
++      window.history.replaceState(window.history.state, "", url);
++    }
++    return () => window.removeEventListener("pageshow", restored);
++  }, []);
+   const mode = useSyncExternalStore(
+     subscribeMode,
+     storedMode,
+-    (): Mode => "demo",
++    (): Mode => "personal",
+   );
+-  const setMode = setStoredMode;
++  const setMode = (next: Mode) => {
++    if (saving.current) { toast.info("Wait for your save to finish before switching workspaces."); return; }
++    setStoredMode(next);
++  };
+   const cache = useQueryClient();
+   const query = useQuery<Workspace>({
+     queryKey: ["workspace", mode],
+@@ -72,17 +87,17 @@
+     refetchOnWindowFocus: false,
+   });
+   const mutation = useMutation({
+-    mutationFn: async (action: Action) => {
+-      const latest = cache.getQueryData<Workspace>(["workspace", mode]);
++    mutationFn: async ({ action, mode: saveMode }: { action: Action; mode: Mode }) => {
++      const latest = cache.getQueryData<Workspace>(["workspace", saveMode]);
+       if (!latest) throw Error("Wait for your profile to load.");
+       return fetchJson<Workspace>("/api/workspace", {
+         method: "POST",
+         headers: { "Content-Type": "application/json" },
+-        body: JSON.stringify({ mode, revision: latest.revision, action }),
++        body: JSON.stringify({ mode: saveMode, revision: latest.revision, action }),
+       }) as Promise<Workspace>;
+     },
+-    onSuccess: (data: Workspace) =>
+-      cache.setQueryData(["workspace", mode], data),
++    onSuccess: (data: Workspace, variables) =>
++      cache.setQueryData(["workspace", variables.mode], data),
+     onError: (e: Error) => toast.error(e.message),
+   });
+   return (
+@@ -94,7 +109,16 @@
+         busy: mutation.isPending,
+         mode,
+         setMode,
+-        mutate: mutation.mutateAsync,
++        mutate: async (action) => {
++          if (saving.current) {
++            const error = Error("A save is already in progress. Wait for it to finish.");
++            toast.error(error.message);
++            throw error;
++          }
++          saving.current = true;
++          try { return await mutation.mutateAsync({ action, mode }); }
++          finally { saving.current = false; }
++        },
+         refresh: () => void query.refetch(),
+       }}
+     >
+--- before/components/ui/button.tsx
++++ after/components/ui/button.tsx
+@@ -43,6 +43,7 @@
+   variant = "default",
+   size = "default",
+   asChild = false,
++  type = "button",
+   ...props
+ }: React.ComponentProps<"button"> &
+   VariantProps<typeof buttonVariants> & {
+@@ -56,6 +57,7 @@
+       data-variant={variant}
+       data-size={size}
+       className={cn(buttonVariants({ variant, size, className }))}
++      {...(!asChild ? { type } : {})}
+       {...props}
+     />
+   )
+--- before/lib/auth/profile.ts
++++ after/lib/auth/profile.ts
+@@ -0,0 +1,11 @@
++import type { AuthUser } from "./core.ts";
++
++export function accountProfile(user: AuthUser) {
++  const metadata = user.user_metadata;
++  const name = [metadata?.full_name, metadata?.name]
++    .find(value => typeof value === "string" && value.trim());
++  return {
++    name: typeof name === "string" ? name.trim().slice(0, 100) : "",
++    email: typeof user.email === "string" ? user.email.trim().slice(0, 254) : "",
++  };
++}
+--- before/lib/client-request.ts
++++ after/lib/client-request.ts
+@@ -0,0 +1,16 @@
++// Same-origin JSON requests have bounded waits and readable proxy/network errors.
++export async function fetchJson<T>(url: string, options: RequestInit = {}, timeout = 20000): Promise<T> {
++  let response: Response;
++  try {
++    response = await fetch(url, { ...options, signal: options.signal ?? AbortSignal.timeout(timeout) });
++  } catch (error) {
++    if (error instanceof Error && ["TimeoutError", "AbortError"].includes(error.name))
++      throw Error("The request timed out. Refresh to check whether it saved before trying again.");
++    throw Error("Unable to connect. Check your connection and try again.");
++  }
++  let data: T & { error?: string };
++  try { data = await response.json(); }
++  catch { throw Error(`The server returned an unexpected response (${response.status}). Please try again.`); }
++  if (!response.ok) throw Error(data.error || `The request failed (${response.status}). Please try again.`);
++  return data;
++}
+--- before/lib/engine/actions.ts
++++ after/lib/engine/actions.ts
+@@ -33,6 +33,12 @@
+     }
+   };
+   switch (a.type) {
++    case "capture": {
++      w = applyAction(w, { type: "entity", entity: a.entity });
++      w = applyAction(w, { type: "answer", entityId: a.entity.id,
++        questionId: `${a.entity.kind}.summary`, value: a.text, confirmed: true });
++      break;
++    }
+     case "profile": {
+       for (const key of ["website", "linkedin", "github"] as const) {
+         if (a.profile[key]) {
+@@ -134,6 +140,21 @@
+     case "deleteFact": {
+       invalidate([a.id]);
+       w.facts = w.facts.filter((f) => f.id !== a.id);
++      break;
++    }
++    case "confirmImport": {
++      const imported = w.facts.find((f) => f.id === a.id && f.questionId === "import.resume");
++      if (!imported || imported.confirmed) throw Error("Choose an unconfirmed imported contribution.");
++      const entity = w.entities.find((e) => e.id === imported.entityId);
++      if (!entity) throw Error("Experience not found.");
++      const questionId = `${entity.kind}.action`;
++      const existing = w.facts.find((f) => f.entityId === entity.id && f.questionId === questionId);
++      const value = [existing?.value !== "__skipped__" ? existing?.value : "", imported.value].filter(Boolean).join("\n");
++      w = applyAction(w, { type: "answer", entityId: entity.id, questionId, value, confirmed: true });
++      const source = w.facts.find((f) => f.id === imported.id)!;
++      source.confirmed = true;
++      source.revision += 1;
++      source.updatedAt = now;
+       break;
+     }
+     case "generate": {
+--- before/lib/engine/pdf.ts
++++ after/lib/engine/pdf.ts
+@@ -35,7 +35,7 @@
+   w: Workspace,
+   r: Resume,
+   loadFont: (name: string) => Promise<Uint8Array> = async (name) => {
+-    const response = await fetch(`/fonts/${name}.ttf`);
++    const response = await fetch(`/fonts/${name}.ttf`, { signal: AbortSignal.timeout(20000) });
+     if (!response.ok) throw Error("The export font could not be loaded.");
+     return new Uint8Array(await response.arrayBuffer());
+   },
+--- before/lib/repository.ts
++++ after/lib/repository.ts
+@@ -8,6 +8,27 @@
+   type Fact,
+ } from "./engine/model.ts";
+ export const profileId = (user: string, mode: string) => `${user}:${mode}`;
++// Seed only missing personal contact fields. SQL guards against concurrent edits
++// and keeps every other profile field, resume, and fact intact.
++export async function seedAccountProfile(
++  db: D1Database, user: string, contact: { name: string; email: string },
++) {
++  if (!contact.name && !contact.email) return;
++  const pid = profileId(user, "personal");
++  const profile = emptyWorkspace().profile;
++  const now = new Date().toISOString();
++  await db.batch([
++    db.prepare("INSERT INTO profiles(id,user_id,mode,data,revision,write_token,updated_at) VALUES(?,?,?,?,0,?,?) ON CONFLICT(id) DO NOTHING")
++      .bind(pid, user, "personal", JSON.stringify(profile), "", now),
++    db.prepare(`UPDATE profiles SET data=json_set(data,
++      '$.name', CASE WHEN trim(coalesce(json_extract(data,'$.name'),''))='' THEN ? ELSE json_extract(data,'$.name') END,
++      '$.email', CASE WHEN trim(coalesce(json_extract(data,'$.email'),''))='' THEN ? ELSE json_extract(data,'$.email') END),
++      revision=revision+1,updated_at=? WHERE id=? AND
++      ((trim(coalesce(json_extract(data,'$.name'),''))='' AND ?!='') OR
++       (trim(coalesce(json_extract(data,'$.email'),''))='' AND ?!=''))`)
++      .bind(contact.name, contact.email, now, pid, contact.name, contact.email),
++  ]);
++}
+ export async function loadWorkspace(
+   db: D1Database,
+   user: string,
+--- before/lib/store.ts
++++ after/lib/store.ts
+@@ -1,8 +1,13 @@
+ import { database } from "./server";
+ import * as repository from "./repository";
+ import type { Workspace } from "./engine/model";
+-export const loadWorkspace = (user: string, mode: "demo" | "personal") =>
+-  repository.loadWorkspace(database(), user, mode);
++import type { AuthUser } from "./auth/core";
++import { accountProfile } from "./auth/profile";
++export const loadWorkspace = async (user: string, mode: "demo" | "personal", account?: AuthUser) => {
++  const db = database();
++  if (mode === "personal" && account) await repository.seedAccountProfile(db, user, accountProfile(account));
++  return repository.loadWorkspace(db, user, mode);
++};
+ export const saveWorkspace = (user: string, w: Workspace, expected: number) =>
+   repository.saveWorkspace(database(), user, w, expected);
+ export const deleteAccount = (user: string) =>
+--- before/lib/validation.ts
++++ after/lib/validation.ts
+@@ -8,7 +8,7 @@
+ export const ProfileSchema = z
+   .object({
+     name: short,
+-    email: z.union([z.literal(""), z.string().email().max(250)]),
++    email: z.union([z.literal(""), z.string().email().max(254)]),
+     phone: short,
+     location: short,
+     linkedin: short,
+@@ -31,7 +31,7 @@
+   .object({
+     id,
+     kind: z.enum(["experience", "project", "activity", "education"]),
+-    title: z.string().min(1).max(150),
++    title: z.string().trim().min(1).max(150),
+     subtitle: short,
+     dates: short,
+   })
+@@ -77,8 +77,10 @@
+     confirmed: z.boolean(),
+   }),
+   z.object({ type: z.literal("entity"), entity: EntitySchema }),
++  z.object({ type: z.literal("capture"), entity: EntitySchema, text: z.string().trim().min(2).max(1800) }),
+   z.object({ type: z.literal("deleteEntity"), id }),
+   z.object({ type: z.literal("deleteFact"), id }),
++  z.object({ type: z.literal("confirmImport"), id }),
+   z.object({
+     type: z.literal("generate"),
+     name: z.string().min(1).max(120),
+@@ -93,7 +95,7 @@
+   z.object({
+     type: z.literal("import"),
+     entityId: id,
+-    text: z.string().min(2).max(1800),
++    text: z.string().trim().min(2).max(1800),
+   }),
+   z.object({ type: z.literal("reset") }),
+ ]);
+--- before/app/api/workspace/route.ts
++++ after/app/api/workspace/route.ts
+@@ -2,17 +2,19 @@
+ import { loadWorkspace, saveWorkspace, deleteAccount } from "@/lib/store";
+ import { RequestSchema } from "@/lib/validation";
+ import { applyAction } from "@/lib/engine/actions";
++import { currentUser } from "@/lib/auth/server";
+ export const dynamic = "force-dynamic";
+ export async function GET(request: Request) {
+   try {
+-    const user = await identity();
++    const account = await currentUser();
++    const user = account ? `supabase:${account.id}` : null;
+     if (!user)
+       return json({ error: "Sign in to save and access your workspace." }, 401);
+     const mode =
+       new URL(request.url).searchParams.get("mode") === "personal"
+         ? "personal"
+         : "demo";
+-    return json(await loadWorkspace(user, mode));
++    return json(await loadWorkspace(user, mode, account ?? undefined));
+   } catch (e) {
+     return json(
+       {
+--- before/app/auth/callback/route.ts
++++ after/app/auth/callback/route.ts
+@@ -10,7 +10,7 @@
+     if (!code || code.length > 2048 || !verifier || !/^[a-f0-9]{96}$/.test(verifier)) throw Error("Invalid callback");
+     const session = await authRequest<Session>("token?grant_type=pkce", { auth_code: code, code_verifier: verifier });
+     if (!sessionValid(session)) throw Error("Invalid session");
+-    return verifierCookie(sessionCookies(NextResponse.redirect(new URL("/dashboard", url)), request, session), request);
++    return verifierCookie(sessionCookies(NextResponse.redirect(new URL("/dashboard?workspace=personal", url)), request, session), request);
+   } catch {
+     return verifierCookie(NextResponse.redirect(new URL("/signin?error=google", url)), request);
+   }
+--- before/app/globals.css
++++ after/app/globals.css
+@@ -473,6 +473,24 @@
+   padding: 30px !important;
+ }
+ .wide-dialog {
++  width: min(730px, calc(100vw - 2rem)) !important;
++}
++[data-slot="dialog-content"],
++[data-slot="alert-dialog-content"] {
++  max-height: 90vh;
++  max-height: 90dvh;
++  overflow-y: auto;
++}
++@media (max-width: 767px) {
++  input, textarea, .pick {
++    font-size: 16px !important;
++  }
++  .icon-button, .graph-label, .graph-reset {
++    min-width: 44px;
++    min-height: 44px;
++  }
++}
++.wide-dialog {
+   max-width: 730px !important;
+ }
+ .folio-dialog [data-slot="dialog-header"] {
+@@ -4322,3 +4340,8 @@
+ .auth-card .auth-switch { text-align: center; margin: 1.5rem 0 1rem; }
+ .auth-switch a { color: #afe8c8; text-decoration: underline; }
+ @media(max-width: 400px) { .auth-card { padding: 1.25rem; } }
++@media (max-width: 767px) {
++  .page-content input, .page-content textarea, .page-content .pick {
++    font-size: 16px !important;
++  }
++}
+--- before/tests/account-profile.test.ts
++++ after/tests/account-profile.test.ts
+@@ -0,0 +1,8 @@
++import { test } from "node:test";
++import assert from "node:assert/strict";
++import { accountProfile } from "../lib/auth/profile.ts";
++test("Google and email signup names populate contact defaults", () => {
++  assert.deepEqual(accountProfile({ id: "a", email: "a@example.com", user_metadata: { full_name: " Maya Chen " } }), { name: "Maya Chen", email: "a@example.com" });
++  assert.equal(accountProfile({ id: "a", user_metadata: { full_name: " ", name: "Maya" } }).name, "Maya");
++  assert.deepEqual(accountProfile({ id: "a" }), { name: "", email: "" });
++});
+--- before/tests/interactions.test.ts
++++ after/tests/interactions.test.ts
+@@ -0,0 +1,49 @@
++import { test } from "node:test";
++import assert from "node:assert/strict";
++import { applyAction } from "../lib/engine/actions.ts";
++import { emptyWorkspace } from "../lib/engine/model.ts";
++import { ActionSchema } from "../lib/validation.ts";
++import { fetchJson } from "../lib/client-request.ts";
++
++const entity = { id: "project-a", kind: "project" as const, title: "Project", subtitle: "", dates: "" };
++test("experience capture commits the entity and answer as one revision or neither", () => {
++  const original = emptyWorkspace();
++  const w = applyAction(original, { type: "capture", entity, text: "I built an application." });
++  assert.equal(w.revision, original.revision + 1);
++  assert.equal(w.entities.length, 1);
++  assert.equal(w.facts[0].questionId, "project.summary");
++  assert.throws(() => applyAction(original, { type: "capture", entity, text: "" }));
++  assert.equal(original.entities.length, 0);
++  assert.equal(original.facts.length, 0);
++});
++test("confirming imports preserves existing contributions and cannot append twice", () => {
++  let w = applyAction(emptyWorkspace(), { type: "entity", entity });
++  w = applyAction(w, { type: "answer", entityId: entity.id, questionId: "project.action", value: "I built the interface.", confirmed: true });
++  w = applyAction(w, { type: "import", entityId: entity.id, text: "I wrote integration tests." });
++  const id = w.facts.find(f => f.questionId === "import.resume")!.id;
++  w = applyAction(w, { type: "confirmImport", id });
++  const action = w.facts.find(f => f.questionId === "project.action")!;
++  assert.ok(action.value.includes("built the interface"));
++  assert.ok(action.value.includes("integration tests"));
++  assert.equal(w.facts.find(f => f.id === id)!.confirmed, true);
++  assert.throws(() => applyAction(w, { type: "confirmImport", id }));
++});
++test("blank experience titles and whitespace imports are rejected", () => {
++  assert.equal(ActionSchema.safeParse({ type: "entity", entity: { ...entity, title: "   " } }).success, false);
++  assert.equal(ActionSchema.safeParse({ type: "import", entityId: entity.id, text: "  " }).success, false);
++});
++test("network, HTML proxy failures, timeouts, and API errors give readable feedback", async () => {
++  const realFetch = globalThis.fetch;
++  try {
++    globalThis.fetch = async () => new Response("Bad gateway", { status: 502 });
++    await assert.rejects(fetchJson("/api/workspace"), /unexpected response \(502\)/);
++    globalThis.fetch = async () => Response.json({ error: "Sign in first." }, { status: 401 });
++    await assert.rejects(fetchJson("/api/workspace"), /Sign in first/);
++    globalThis.fetch = async () => { throw new DOMException("timeout", "TimeoutError"); };
++    await assert.rejects(fetchJson("/api/workspace"), /timed out/);
++    globalThis.fetch = async () => { throw Error("offline"); };
++    await assert.rejects(fetchJson("/api/workspace"), /Unable to connect/);
++    globalThis.fetch = async () => Response.json({ ok: true });
++    assert.deepEqual(await fetchJson("/api/workspace"), { ok: true });
++  } finally { globalThis.fetch = realFetch; }
++});
+--- before/tests/repository.test.ts
++++ after/tests/repository.test.ts
+@@ -6,6 +6,7 @@
+   loadWorkspace,
+   saveWorkspace,
+   deleteAccount,
++  seedAccountProfile,
+ } from "../lib/repository.ts";
+ import { applyAction } from "../lib/engine/actions.ts";
+ 
+@@ -57,6 +58,24 @@
+   } as unknown as D1Database;
+   return { db, sqlite };
+ }
++test("account contact defaults persist once, preserve custom values, and stay private", async () => {
++  const { db, sqlite } = fixture();
++  await seedAccountProfile(db, "alice", { name: "Google Name", email: "a@example.com" });
++  let w = await loadWorkspace(db, "alice", "personal");
++  assert.equal(w.profile.name, "Google Name");
++  assert.equal(w.revision, 1);
++  await seedAccountProfile(db, "alice", { name: "Changed Provider Name", email: "changed@example.com" });
++  w = await loadWorkspace(db, "alice", "personal");
++  assert.equal(w.profile.name, "Google Name");
++  assert.equal(w.revision, 1);
++  const next = applyAction(w, { type: "profile", profile: { ...w.profile, name: "Custom Name" } });
++  await saveWorkspace(db, "alice", next, w.revision);
++  await seedAccountProfile(db, "alice", { name: "Provider", email: "a@example.com" });
++  assert.equal((await loadWorkspace(db, "alice", "personal")).profile.name, "Custom Name");
++  assert.equal((await loadWorkspace(db, "bob", "personal")).profile.name, "");
++  assert.equal((await loadWorkspace(db, "alice", "demo")).profile.name, "Maya Chen");
++  sqlite.close();
++});
+ test("repository round-trips profile, evidence, snapshots, revisions and saved jobs", async () => {
+   const { db, sqlite } = fixture();
+   const w = await loadWorkspace(db, "alice", "demo");
+--- before/eslint.config.mjs
++++ after/eslint.config.mjs
+@@ -14,6 +14,14 @@
+     "next-env.d.ts",
+   ]),
+   {
++    files: ["components/folio/**/*.tsx"],
++    rules: {
++      // Folio deliberately uses document navigation throughout. Its hosted
++      // client router previously stalled on clicks that worked in a new tab.
++      "@next/next/no-html-link-for-pages": "off",
++    },
++  },
++  {
+     files: ["components/ui/**/*.{ts,tsx}", "hooks/use-mobile.ts"],
+     rules: {
+       // These files are vendored verbatim from shadcn@4.17.0. Keep the
