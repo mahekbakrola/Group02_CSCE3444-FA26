@@ -10,4 +10,4 @@ Srijana Kushwaha  -  srijanakushwaha@my.unt.edu  -  Testing-QA / API-Integration
 https://github.com/users/mahekbakrola/projects/1
 
 ## Project Status
-Research phase complete. Team is now designing the Q&A question flow and initial UI mockups, with backend structure planning underway.
+SITE is public. Have to fix bugs and small issues.
